@@ -6,7 +6,6 @@ namespace writely.Models
     public class Entry : Entity
     {
         public string Title { get; private set; }
-        public string Tags { get; private set; }
         public string Body { get; private set; }
 
         // Navigation properties
@@ -17,10 +16,9 @@ namespace writely.Models
         {
         }
 
-        public Entry(string title, string tags, string body)
+        public Entry(string title, string body)
         {
             Title = title;
-            Tags = tags;
             Body = body;
         }
     }
