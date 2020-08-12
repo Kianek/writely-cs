@@ -7,6 +7,8 @@ namespace writely.Models
     {
         public string Title { get; private set; }
         public string Body { get; private set; }
+        public string UserId { get; set; }
+        public string Username { get; set; }
 
         // Navigation properties
         public long JournalId { get; set; }
@@ -16,10 +18,12 @@ namespace writely.Models
         {
         }
 
-        public Entry(string title, string body)
+        public Entry(string title, string body, string userId, string username)
         {
             Title = title;
             Body = body;
+            UserId = userId;
+            Username = username;
         }
     }
 }
