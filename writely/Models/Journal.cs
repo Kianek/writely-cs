@@ -10,7 +10,7 @@ namespace writely.Models
 
         // Navigation properties
         public string UserId { get; set; }
-        public string Username { get; set; }
+        public AppUser User { get; set; }
         public List<Entry> Entries { get; set; } = new List<Entry>();
 
         public Journal()
