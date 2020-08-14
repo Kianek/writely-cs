@@ -9,6 +9,7 @@ namespace writely.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool IsAccountActive { get; set; }
 
         public AppUser()
         {
@@ -18,6 +19,7 @@ namespace writely.Models
         {
             FirstName = user.FirstName;
             LastName = user.LastName;
+            IsAccountActive = false;
             base.Email = user.Email;
             base.UserName = user.Username;
         }
