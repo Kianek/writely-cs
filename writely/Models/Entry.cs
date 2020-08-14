@@ -7,8 +7,8 @@ namespace writely.Models
     {
         public string Title { get; private set; }
         public string Body { get; private set; }
-        public string UserId { get; set; }
-        public string Username { get; set; }
+        public string UserId { get; private set; }
+        public string Username { get; private set; }
 
         // Navigation properties
         public long JournalId { get; set; }
