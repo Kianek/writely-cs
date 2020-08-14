@@ -15,25 +15,44 @@ namespace writely.Services
             this.userManager = userManager;
         }
 
-        public Task<IdentityResult> Register(UserRegistrationDto registration)
+        public async Task<IdentityResult> Register(UserRegistrationDto registration)
+        {
+            if (registration.Password != registration.ConfirmPassword)
+            {
+                return IdentityResult.Failed();
+            }
+
+            var user = await userManager.FindByEmailAsync(registration.Email);
+            if (user != null)
+            {
+                return IdentityResult.Failed(GenerateError("Email already registered"));
+            }
+            
+            var newUser = new AppUser(registration);
+            return await userManager.CreateAsync(newUser, registration.Password);
+        }
+
+        public async Task<IdentityResult> DeleteAccount(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IdentityResult> DeleteAccount(string id)
+        public async  Task<IdentityResult> DisableAccount(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IdentityResult> DisableAccount(string id)
+        public async Task<UserData> GetUserData(string id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<UserData> GetUserData(string id)
+        private IdentityError GenerateError(string description = "")
         {
-            throw new NotImplementedException();
+            return new IdentityError
+            {
+                Description = description
+            };
         }
-
     }
 }
