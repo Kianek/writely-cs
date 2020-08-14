@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using writely.Models;
 using writely.Models.Dto;
@@ -14,22 +15,22 @@ namespace writely.Services
             this.userManager = userManager;
         }
 
-        public int Register(UserRegistrationDto registration)
+        public Task<IdentityResult> Register(UserRegistrationDto registration)
         {
             throw new NotImplementedException();
         }
 
-        public int DeleteAccount(string id)
+        public Task<IdentityResult> DeleteAccount(string id)
         {
             throw new NotImplementedException();
         }
 
-        public int DisableAccount(string id)
+        public Task<IdentityResult> DisableAccount(string id)
         {
             throw new NotImplementedException();
         }
 
-        public UserData GetUserData(string id)
+        public Task<UserData> GetUserData(string id)
         {
             throw new NotImplementedException();
         }

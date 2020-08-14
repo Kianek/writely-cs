@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -6,9 +8,9 @@ namespace writely.Services
 {
     public interface IUserService
     {
-        int Register(UserRegistrationDto registration);
-        int DeleteAccount(string id);
-        int DisableAccount(string id);
-        UserData GetUserData(string id);
+        Task<IdentityResult> Register(UserRegistrationDto registration);
+        Task<IdentityResult> DeleteAccount(string id);
+        Task<IdentityResult> DisableAccount(string id);
+        Task<UserData> GetUserData(string id);
     }
 }
