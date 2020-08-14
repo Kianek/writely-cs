@@ -8,11 +8,11 @@ namespace writely.Services
 {
     public class UserService : IUserService
     {
-        private UserManager<AppUser> userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public UserService(UserManager<AppUser> userManager)
         {
-            this.userManager = userManager;
+            _userManager = userManager;
         }
 
         public async Task<IdentityResult> Register(UserRegistrationDto registration)
@@ -22,14 +22,14 @@ namespace writely.Services
                 return IdentityResult.Failed();
             }
 
-            var user = await userManager.FindByEmailAsync(registration.Email);
+            var user = await _userManager.FindByEmailAsync(registration.Email);
             if (user != null)
             {
                 return IdentityResult.Failed(GenerateError("Email already registered"));
             }
             
             var newUser = new AppUser(registration);
-            return await userManager.CreateAsync(newUser, registration.Password);
+            return await _userManager.CreateAsync(newUser, registration.Password);
         }
 
         public async Task<IdentityResult> DeleteAccount(string id)
