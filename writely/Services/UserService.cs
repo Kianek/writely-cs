@@ -43,9 +43,16 @@ namespace writely.Services
             return await _userManager.DeleteAsync(user);
         }
 
-        public async  Task<IdentityResult> DisableAccount(string id)
+        public async Task<IdentityResult> DisableAccount(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return IdentityResult.Failed(GenerateError("Unable to locate user"));
+            }
+            
+            user.IsAccountActive = false;
+            return await _userManager.UpdateAsync(user);
         }
 
         public async Task<UserData> GetUserData(string id)
