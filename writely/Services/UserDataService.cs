@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using writely.Data;
 using writely.Models;
 using writely.Models.Dto;
@@ -13,7 +14,7 @@ namespace writely.Services
             _context = context;
         }
 
-        public UserData LoadUserData(string id)
+        public async Task<UserData> LoadUserData(string id)
         {
             throw new System.NotImplementedException();
         }
