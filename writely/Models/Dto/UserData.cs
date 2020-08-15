@@ -14,5 +14,14 @@ namespace writely.Models.Dto
         public UserData()
         {
         }
+
+        public UserData(AppUser user)
+        {
+            Id = user.Id;
+            Username = user.UserName;
+            FirstName = user.FirstName;
+            LastName = user.LastName;
+            Journals = new List<JournalDto>();
+        }
     }
 }
