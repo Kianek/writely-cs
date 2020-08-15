@@ -16,7 +16,9 @@ namespace writely.Services
 
         public async Task<UserData> LoadUserData(string id)
         {
-            throw new System.NotImplementedException();
+            var user = await _context.Users.FindAsync(id);
+            
+            return user == null ? null : new UserData(user);
         }
     }
 }
