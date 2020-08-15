@@ -34,7 +34,13 @@ namespace writely.Services
 
         public async Task<IdentityResult> DeleteAccount(string id)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return IdentityResult.Failed(GenerateError("Error deleting account"));
+            }
+            
+            return await _userManager.DeleteAsync(user);
         }
 
         public async  Task<IdentityResult> DisableAccount(string id)
