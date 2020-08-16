@@ -6,10 +6,10 @@ namespace writely.Services
 {
     public interface IJournalService
     {
-        Journal Add(string title);
+        Journal Add(string userId, string title);
         Journal Update(JournalDto updatedJournal);
         void Delete(long id);
-        List<Journal> GetAll(int limit = 0);
+        List<Journal> GetAll(string userId, int limit = 0);
         Journal GetById(long id);
     }
 }
