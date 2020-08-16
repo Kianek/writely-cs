@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using writely.Data;
 using writely.Models;
 using writely.Models.Dto;
@@ -15,27 +16,27 @@ namespace writely.Services
             _context = context;
         }
 
-        public Journal Add(string userId, string title)
+        public Task<Journal> Add(string userId, string title)
         {
             throw new System.NotImplementedException();
         }
 
-        public Journal Update(JournalDto updatedJournal)
+        public Task<Journal> Update(JournalDto updatedJournal)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Delete(long id)
+        public Task Delete(long id)
         {
             throw new System.NotImplementedException();
         }
 
-        public List<Journal> GetAll(string userId, int limit = 0)
+        public Task<List<Journal>> GetAll(string userId, int limit = 0)
         {
             throw new System.NotImplementedException();
         }
 
-        public Journal GetById(long id)
+        public Task<Journal> GetById(long id)
         {
             throw new System.NotImplementedException();
         }

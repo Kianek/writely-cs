@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -6,10 +7,10 @@ namespace writely.Services
 {
     public interface IJournalService
     {
-        Journal Add(string userId, string title);
-        Journal Update(JournalDto updatedJournal);
-        void Delete(long id);
-        List<Journal> GetAll(string userId, int limit = 0);
-        Journal GetById(long id);
+        Task<Journal> Add(string userId, string title);
+        Task<Journal> Update(JournalDto updatedJournal);
+        Task Delete(long id);
+        Task<List<Journal>> GetAll(string userId, int limit = 0);
+        Task<Journal> GetById(long id);
     }
 }
