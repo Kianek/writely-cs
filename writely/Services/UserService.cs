@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -55,9 +56,9 @@ namespace writely.Services
             return await _userManager.UpdateAsync(user);
         }
 
-        public async Task<UserData> GetUserData(string id)
+        public async Task<UserData> GetUserData([FromServices] IUserDataService dataService, string id)
         {
-            throw new NotImplementedException();
+            return await dataService.LoadUserData(id);
         }
 
         private IdentityError GenerateError(string description = "")
