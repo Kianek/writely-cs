@@ -16,27 +16,27 @@ namespace writely.Services
             _context = context;
         }
 
-        public Task<Journal> Add(string userId, string title)
+        public async Task<Journal> Add(string userId, string title)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Journal> Update(JournalDto updatedJournal)
+        public async Task<Journal> Update(JournalDto updatedJournal)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task Delete(long id)
+        public async Task Delete(long id)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<List<Journal>> GetAll(string userId, int limit = 0)
+        public async Task<List<Journal>> GetAll(string userId, int limit = 0)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<Journal> GetById(long id)
+        public async Task<Journal> GetById(long id)
         {
             throw new System.NotImplementedException();
         }
