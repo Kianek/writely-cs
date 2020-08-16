@@ -2,8 +2,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using FluentAssertions.Common;
-using Microsoft.EntityFrameworkCore;
-using writely.Data;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
