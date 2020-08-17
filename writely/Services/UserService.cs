@@ -67,9 +67,10 @@ namespace writely.Services
             return await _userManager.UpdateAsync(user);
         }
 
-        public Task<IdentityResult> ChangePassword(string id, string oldPassword, string newPassword)
+        public async Task<IdentityResult> ChangePassword(string id, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByIdAsync(id);
+            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
         }
 
         public async Task<UserData> GetUserData([FromServices] IUserDataService dataService, string id)
