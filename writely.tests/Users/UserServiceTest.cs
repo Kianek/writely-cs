@@ -103,6 +103,34 @@ namespace writely.tests.Users
         }
 
         [Fact]
+        public async void ActivateAccount_UserFound_Activate_Successful()
+        {
+            var user = new AppUser {Id = "UserId", IsAccountActive = false};
+            _mockUserManager.Setup(um =>
+                    um.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+            _mockUserManager.Setup(um =>
+                    um.UpdateAsync(It.IsAny<AppUser>()))
+                .ReturnsAsync(IdentityResult.Success);
+            
+            var service = new UserService(_mockUserManager.Object);
+            var result = await service.ActivateAccount(user.Id);
+            result.Succeeded.Should().BeTrue();
+        }
+
+        [Fact]
+        public async void ActivateAccount_UserNotFound_Fail()
+        {
+            _mockUserManager.Setup(um =>
+                    um.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(() => null);
+            
+            var service = new UserService(_mockUserManager.Object);
+            var result = await service.ActivateAccount("UserId");
+            result.Succeeded.Should().BeFalse();
+        }
+
+        [Fact]
         public async void DisableAccount_UserFound_Disable_Successful()
         {
             const string userId = "UserId";
@@ -128,6 +156,32 @@ namespace writely.tests.Users
             
             var service = new UserService(_mockUserManager.Object);
             var result = await service.DisableAccount("UserId");
+            result.Succeeded.Should().BeFalse();
+        }
+
+        [Fact]
+        public async void ChangePassword_UserFound_PasswordChanged_Successful()
+        {
+            const string oldPassword = "SpiffyNewPassword123";
+            const string newPassword = "SpiffyNewPassword123";
+            _mockUserManager.Setup(um =>
+                    um.ChangePasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+            
+            var service = new UserService(_mockUserManager.Object);
+            var result = await service.ChangePassword("UserId", oldPassword, newPassword);
+            result.Succeeded.Should().BeTrue();
+        }
+
+        [Fact]
+        public async void ChangePassword_UserNotFound_Fail()
+        {
+            _mockUserManager.Setup(um =>
+                    um.ChangePasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed());
+            
+            var service = new UserService(_mockUserManager.Object);
+            var result = await service.ChangePassword("UserId", "Blah123", "Newblah123");
             result.Succeeded.Should().BeFalse();
         }
 
