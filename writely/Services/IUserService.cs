@@ -10,6 +10,8 @@ namespace writely.Services
     {
         Task<IdentityResult> Register(UserRegistrationDto registration);
         Task<IdentityResult> DeleteAccount(string id);
+        Task<IdentityResult> ActivateAccount(string id);
+        Task<IdentityResult> ChangePassword(string id, string newPassword);
         Task<IdentityResult> DisableAccount(string id);
         Task<UserData> GetUserData(IUserDataService dataService, string id);
     }

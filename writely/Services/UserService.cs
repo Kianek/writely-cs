@@ -44,6 +44,11 @@ namespace writely.Services
             return await _userManager.DeleteAsync(user);
         }
 
+        public Task<IdentityResult> ActivateAccount(string id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IdentityResult> DisableAccount(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -54,6 +59,11 @@ namespace writely.Services
             
             user.IsAccountActive = false;
             return await _userManager.UpdateAsync(user);
+        }
+
+        public Task<IdentityResult> ChangePassword(string id, string newPassword)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<UserData> GetUserData([FromServices] IUserDataService dataService, string id)
