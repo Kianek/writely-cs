@@ -168,6 +168,9 @@ namespace writely.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(255);
 
+                    b.Property<bool>("IsAccountActive")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("TEXT")
