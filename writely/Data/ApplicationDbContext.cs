@@ -8,6 +8,8 @@ namespace writely.Data
     {
         public DbSet<Journal> Journals { get; set; }
         public DbSet<Entry> Entries { get; set; }
+        
+        public ApplicationDbContext() {}
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -44,7 +46,9 @@ namespace writely.Data
 
                 j
                     .HasMany(journal => journal.Entries)
-                    .WithOne(entry => entry.Journal);
+                    .WithOne(entry => entry.Journal)
+                    .HasForeignKey(e => e.JournalId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<Entry>(entry =>
