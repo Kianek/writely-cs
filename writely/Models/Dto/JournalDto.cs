@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace writely.Models.Dto
 {
@@ -14,6 +15,16 @@ namespace writely.Models.Dto
 
         public JournalDto()
         {
+        }
+
+        public JournalDto(Journal journal)
+        {
+            Id = journal.Id;
+            Title = journal.Title;
+            UserId = journal.UserId;
+            CreatedAt = journal.CreatedAt;
+            LastModified = journal.LastModified;
+            Entries = journal.Entries?.Select(e => new EntryDto(e)).ToList();
         }
     }
 }
