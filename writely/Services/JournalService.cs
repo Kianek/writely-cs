@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using System.Net.Mime;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using writely.Data;
 using writely.Models;
 using writely.Models.Dto;
@@ -18,7 +19,19 @@ namespace writely.Services
 
         public async Task<JournalDto> Add(string userId, string title)
         {
-            throw new System.NotImplementedException();
+            var journal = await _context.Journals
+                .Where(j => j.UserId == userId)
+                .SingleOrDefaultAsync();
+            if (journal != null)
+            {
+                return null;
+            }
+            
+            journal = new Journal {Title = title, UserId = userId};
+            _context.Journals.Add(journal);
+            await _context.SaveChangesAsync();
+
+            return new JournalDto(journal);
         }
 
         public async Task<JournalDto> Update(JournalDto updatedJournal)
