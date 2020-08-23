@@ -77,7 +77,11 @@ namespace writely.Services
 
         public async Task<JournalDto> GetById(long id)
         {
-            throw new System.NotImplementedException();
+            return await _context.Journals
+                .Where(j => j.Id == id)
+                .Include(j => j.Entries)
+                .Select(j => new JournalDto(j))
+                .SingleOrDefaultAsync();
         }
     }
 }
