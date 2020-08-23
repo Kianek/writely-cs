@@ -67,7 +67,12 @@ namespace writely.Services
 
         public async Task<List<JournalDto>> GetAll(string userId, int limit = 0)
         {
-            throw new System.NotImplementedException();
+            var query = _context.Journals
+                .Where(j => j.UserId == userId)
+                .Include(j => j.Entries)
+                .Select(j => new JournalDto(j));
+            
+            return limit > 0 ? await query.Take(limit).ToListAsync() : await query.ToListAsync();
         }
 
         public async Task<JournalDto> GetById(long id)
