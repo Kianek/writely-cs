@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +37,18 @@ namespace writely.Services
 
         public async Task<JournalDto> Update(JournalDto updatedJournal)
         {
-            throw new System.NotImplementedException();
+            var journal = await _context.Journals.FindAsync(updatedJournal.Id);
+            if (journal == null)
+            {
+                return null;
+            }
+            
+            journal.Title = updatedJournal.Title;
+            journal.LastModified = DateTimeOffset.Now;
+            _context.Journals.Update(journal);
+            await _context.SaveChangesAsync();
+            
+            return new JournalDto(journal);
         }
 
         public async Task Delete(long id)
