@@ -53,7 +53,16 @@ namespace writely.Services
 
         public async Task Delete(long id)
         {
-            throw new System.NotImplementedException();
+            var journal = await _context.Journals
+                .Where(j => j.Id == id)
+                .Include(j => j.Entries)
+                .FirstOrDefaultAsync();
+
+            if (journal != null)
+            {
+                _context.Journals.Remove(journal);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<List<JournalDto>> GetAll(string userId, int limit = 0)
