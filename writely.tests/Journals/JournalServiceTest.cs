@@ -142,7 +142,7 @@ namespace writely.tests.Journals
             await context.SaveChangesAsync();
             
             var service = new JournalService(context);
-            var result = await service.GetAll(userId, limit: 3);
+            var result = await service.GetAll(userId, page: 3);
 
             result.Should().HaveCount(3);
         }
