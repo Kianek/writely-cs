@@ -126,16 +126,32 @@ namespace writely.tests.Journals
         [Fact]
         public async Task Update_JournalFound_UpdateSuccessful_ReturnsOk()
         {
+            var journal = new JournalDto
+            {
+                Id = 1L,
+                Title = "Some Journal",
+                UserId = "UserId"
+            };
+            _mockService.Setup(s =>
+                    s.Update(It.IsAny<JournalDto>()))
+                .ReturnsAsync(journal);
+            
+            _controller = new JournalsController(_mockService.Object, _logger);
+
+            var result = await _controller.Update(journal.Id, journal);
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]
         public async Task Delete_JournalFound_Deleted_ReturnsOk()
         {
-        }
+            _mockService.Setup(s =>
+                s.Delete(It.IsAny<long>()));
+            
+            _controller = new JournalsController(_mockService.Object, _logger);
 
-        [Fact]
-        public async Task Delete_JournalNotFound_ReturnsBadRequest()
-        {
+            var result = await _controller.Delete(1L);
+            result.Should().BeOfType<OkResult>();
         }
     }
 }
