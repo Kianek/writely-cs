@@ -16,10 +16,12 @@ namespace writely.tests.Journals
     {
         private JournalsController _controller;
         private ILogger<JournalsController> _logger;
+        private Mock<IJournalService> _mockService;
 
         public JournalsControllerTest()
         {
             _logger = new Mock<ILogger<JournalsController>>().Object;
+            _mockService = new Mock<IJournalService>();
         }
 
         [Fact]
@@ -32,12 +34,11 @@ namespace writely.tests.Journals
                 UserId = "UserId"
             };
 
-            var mockService = new Mock<IJournalService>();
-            mockService.Setup(s =>
+            _mockService.Setup(s =>
                     s.GetById(It.IsAny<long>()))
                 .ReturnsAsync(new JournalDto(journal));
             
-            _controller = new JournalsController(mockService.Object, _logger);
+            _controller = new JournalsController(_mockService.Object, _logger);
 
             var result = await _controller.GetOne(1L);
             result.Should().BeOfType<OkObjectResult>();
@@ -46,12 +47,11 @@ namespace writely.tests.Journals
         [Fact]
         public async Task GetOne_JournalNotFound_ReturnsBadRequest()
         {
-            var mockService = new Mock<IJournalService>();
-            mockService.Setup(s =>
+            _mockService.Setup(s =>
                     s.GetById(It.IsAny<long>()))
                 .ReturnsAsync(() => null);
             
-            _controller = new JournalsController(mockService.Object, _logger);
+            _controller = new JournalsController(_mockService.Object, _logger);
 
             var result = await _controller.GetOne(1L);
             result.Should().BeOfType<BadRequestResult>();
@@ -67,12 +67,11 @@ namespace writely.tests.Journals
                 journals.Add(new JournalDto { Title = $"Journal {i + 1}", UserId = userId });
             }
 
-            var mockService = new Mock<IJournalService>();
-            mockService.Setup(s =>
+            _mockService.Setup(s =>
                 s.GetAll(It.IsAny<string>(), 5))
                 .ReturnsAsync(journals);
 
-            _controller = new JournalsController(mockService.Object, _logger);
+            _controller = new JournalsController(_mockService.Object, _logger);
 
             var result = await _controller.GetAll(userId, page: 5);
             result.Should().BeOfType<OkObjectResult>();
@@ -81,12 +80,11 @@ namespace writely.tests.Journals
         [Fact]
         public async Task GetAll_JournalsNotFound_ReturnsBadRequest()
         {
-            var mockService = new Mock<IJournalService>();
-            mockService.Setup(s =>
+            _mockService.Setup(s =>
                     s.GetAll(It.IsAny<string>(), 5))
                 .ReturnsAsync(() => null);
 
-            _controller = new JournalsController(mockService.Object, _logger);
+            _controller = new JournalsController(_mockService.Object, _logger);
 
             var result = await _controller.GetAll("UserId", 5);
             result.Should().BeOfType<BadRequestResult>();
