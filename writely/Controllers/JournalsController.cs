@@ -23,9 +23,17 @@ namespace writely.Controllers
         }
 
         [HttpGet("{journalId}")]
-        public async Task<ActionResult<JournalDto>> GetOne(long journalId)
+        public async Task<ActionResult> GetOne(long journalId)
         {
-            throw new NotImplementedException();
+            var journal = await _service.GetById(journalId);
+            if (journal == null)
+            {
+                _logger.LogInformation($"Unable to locate journal: {journalId}");
+                return new BadRequestResult();
+            }
+            
+            _logger.LogInformation($"{journal.Id} {journal.Title} located");
+            return new OkObjectResult(journal);
         }
 
         [HttpGet("{page?}")]
