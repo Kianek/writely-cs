@@ -42,9 +42,11 @@ namespace writely.Controllers
             var journals = await _service.GetAll(userId, page);
             if (journals == null)
             {
+                _logger.LogInformation("Unable to retrieve journals");
                 return new BadRequestResult();
             }
 
+            _logger.LogInformation("Journal/s retrieved");
             return new OkObjectResult(journals);
         }
 
