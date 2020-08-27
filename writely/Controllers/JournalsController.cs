@@ -63,15 +63,24 @@ namespace writely.Controllers
         }
 
         [HttpPatch("{journalId}")]
-        public async Task<ActionResult<JournalDto>> Update(long journalId, [FromBody] JournalDto journal)
+        public async Task<ActionResult> Update(long journalId, [FromBody] JournalDto journal)
         {
-            throw new NotImplementedException();            
+            var result = await _service.Update(journal);
+            if (result == null)
+            {
+                _logger.LogInformation("Unable to retrieve and update journal");
+                return new BadRequestResult();
+            }
+            
+            _logger.LogInformation($"Updated journal: {journalId}");
+            return new OkObjectResult(result);
         }
 
         [HttpDelete("{journalId}")]
         public async Task<ActionResult> Delete(long journalId)
         {
-            throw new NotImplementedException();
+            await _service.Delete(journalId);
+            return new OkResult();
         }
     }
 }
