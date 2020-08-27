@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using writely.Data;
 using writely.Models.Dto;
 
@@ -12,9 +13,11 @@ namespace writely.Controllers
     public class JournalsController
     {
         private ApplicationDbContext _context;
+        private ILogger<JournalsController> _logger;
 
-        public JournalsController(ApplicationDbContext context)
+        public JournalsController(ApplicationDbContext context, ILogger<JournalsController> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
