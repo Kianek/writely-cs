@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using writely.Data;
 using writely.Models.Dto;
+using writely.Services;
 
 namespace writely.Controllers
 {
@@ -12,13 +13,13 @@ namespace writely.Controllers
     [Route("api/users/{userId}/journals")]
     public class JournalsController
     {
-        private ApplicationDbContext _context;
+        private IUserService _service;
         private ILogger<JournalsController> _logger;
 
-        public JournalsController(ApplicationDbContext context, ILogger<JournalsController> logger)
+        public JournalsController(IUserService service, ILogger<JournalsController> logger)
         {
+            _service = service;
             _logger = logger;
-            _context = context;
         }
 
         [HttpGet("{journalId}")]
