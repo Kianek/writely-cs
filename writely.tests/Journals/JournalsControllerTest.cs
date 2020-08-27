@@ -93,11 +93,34 @@ namespace writely.tests.Journals
         [Fact]
         public async Task Add_UserFound_UniqueTitle_JournalAdded_ReturnsOk()
         {
+            const string userId = "UserId";
+            const string title = "Squeaky New Journal";
+            var journalDto = new JournalDto
+            {
+                Title = title,
+                UserId = userId
+            };
+            _mockService.Setup(s =>
+                    s.Add(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(journalDto);
+
+            _controller = new JournalsController(_mockService.Object, _logger);
+
+            var result = await _controller.Add(userId, title);
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]
         public async Task Add_UserFound_DuplicateTitle_ReturnsBadRequest()
         {
+            _mockService.Setup(s =>
+                    s.Add(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(() => null);
+
+            _controller = new JournalsController(_mockService.Object, _logger);
+
+            var result = await _controller.Add("UserId", "Existing Title");
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Fact]
