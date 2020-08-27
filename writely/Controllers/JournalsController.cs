@@ -51,9 +51,15 @@ namespace writely.Controllers
         }
 
         [HttpPost("{title}")]
-        public async Task<ActionResult<JournalDto>> Add(string userId, string title)
+        public async Task<ActionResult> Add(string userId, string title)
         {
-            throw new NotImplementedException();
+            var journal = await _service.Add(userId, title);
+            if (journal == null)
+            {
+                return new BadRequestResult();
+            }
+
+            return new OkObjectResult(journal);
         }
 
         [HttpPatch("{journalId}")]
