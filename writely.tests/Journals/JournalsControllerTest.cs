@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -59,11 +60,36 @@ namespace writely.tests.Journals
         [Fact]
         public async Task GetAll_UserFound_ReturnsOkWithList()
         {
+            const string userId = "UserId";
+            var journals = new List<JournalDto>();
+            for (var i = 0; i < 5; i++)
+            {
+                journals.Add(new JournalDto { Title = $"Journal {i + 1}", UserId = userId });
+            }
+
+            var mockService = new Mock<IJournalService>();
+            mockService.Setup(s =>
+                s.GetAll(It.IsAny<string>(), 5))
+                .ReturnsAsync(journals);
+
+            _controller = new JournalsController(mockService.Object, _logger);
+
+            var result = await _controller.GetAll(userId, page: 5);
+            result.Should().BeOfType<OkObjectResult>();
         }
         
         [Fact]
         public async Task GetAll_JournalsNotFound_ReturnsBadRequest()
         {
+            var mockService = new Mock<IJournalService>();
+            mockService.Setup(s =>
+                    s.GetAll(It.IsAny<string>(), 5))
+                .ReturnsAsync(() => null);
+
+            _controller = new JournalsController(mockService.Object, _logger);
+
+            var result = await _controller.GetAll("UserId", 5);
+            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Fact]

@@ -37,9 +37,15 @@ namespace writely.Controllers
         }
 
         [HttpGet("{page?}")]
-        public async Task<ActionResult<List<JournalDto>>> GetAll(string userId, int page)
+        public async Task<ActionResult> GetAll(string userId, int page = 0)
         {
-            throw new NotImplementedException();
+            var journals = await _service.GetAll(userId, page);
+            if (journals == null)
+            {
+                return new BadRequestResult();
+            }
+
+            return new OkObjectResult(journals);
         }
 
         [HttpPost("{title}")]
