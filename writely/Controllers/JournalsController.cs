@@ -13,10 +13,10 @@ namespace writely.Controllers
     [Route("api/users/{userId}/journals")]
     public class JournalsController
     {
-        private IUserService _service;
+        private IJournalService _service;
         private ILogger<JournalsController> _logger;
 
-        public JournalsController(IUserService service, ILogger<JournalsController> logger)
+        public JournalsController(IJournalService service, ILogger<JournalsController> logger)
         {
             _service = service;
             _logger = logger;
