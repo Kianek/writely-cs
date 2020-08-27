@@ -10,7 +10,7 @@ namespace writely.Services
         Task<JournalDto> Add(string userId, string title);
         Task<JournalDto> Update(JournalDto updatedJournal);
         Task Delete(long id);
-        Task<List<JournalDto>> GetAll(string userId, int limit = 0);
+        Task<List<JournalDto>> GetAll(string userId, int page = 0);
         Task<JournalDto> GetById(long id);
     }
 }
