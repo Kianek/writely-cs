@@ -124,11 +124,6 @@ namespace writely.tests.Journals
         }
 
         [Fact]
-        public async Task Add_UserNotFound_ReturnsBadRequest()
-        {
-        }
-
-        [Fact]
         public async Task Update_JournalFound_UpdateSuccessful_ReturnsOk()
         {
         }
