@@ -74,7 +74,7 @@ namespace writely.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<EntryDto> Update(long journalId, long entryId)
+        public async Task<EntryDto> Update(long journalId, EntryDto entryDto)
         {
             throw new NotImplementedException();
         }
