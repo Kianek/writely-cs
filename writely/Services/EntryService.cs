@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using writely.Data;
-using writely.Extensions;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -53,12 +52,8 @@ namespace writely.Services
                 .Where(j => j.Id == journalId)
                 .Include(j => j.Entries)
                 .FirstOrDefaultAsync();
-            if (journal == null)
-            {
-                return null;
-            }
 
-            return journal.Entries.Select(e => new EntryDto(e)).ToList();
+            return journal?.Entries.Select(e => new EntryDto(e)).ToList();
         }
 
         public async Task Delete(long journalId, long id)
