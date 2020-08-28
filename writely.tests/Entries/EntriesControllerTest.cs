@@ -1,7 +1,11 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using writely.Controllers;
+using writely.Models.Dto;
 using writely.Services;
 using Xunit;
 
@@ -11,7 +15,7 @@ namespace writely.tests.Entries
     {
         private ILogger<EntriesController> _logger;
         private EntriesController _controller;
-        private IEntryService _service;
+        private Mock<IEntryService> _service;
 
         public EntriesControllerTest()
         {
@@ -19,10 +23,32 @@ namespace writely.tests.Entries
         }
 
         [Fact]
-        public async Task GetAll_JournalFound_ReturnsOk() {}
-        
+        public async Task GetAll_JournalFound_ReturnsOk()
+        {
+            _service = new Mock<IEntryService>();
+            _service.Setup(s =>
+                    s.GetAllByJournal(It.IsAny<long>()))
+                .ReturnsAsync(new List<EntryDto>());
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.GetAll(1L);
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
         [Fact]
-        public async Task GetAll_JournalNotFound_ReturnsBadRequest() {}
+        public async Task GetAll_JournalNotFound_ReturnsNotFound()
+        {
+            _service = new Mock<IEntryService>();
+            _service.Setup(s =>
+                    s.GetAllByJournal(It.IsAny<long>()))
+                .ReturnsAsync(() => null);
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.GetAll(1L);
+            result.Should().BeOfType<NotFoundResult>();
+        }
         
         [Fact]
         public async Task GetOne_EntryFound_ReturnsOk() {}
