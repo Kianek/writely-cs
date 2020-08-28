@@ -23,7 +23,15 @@ namespace writely.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll(long journalId)
         {
-            throw new NotImplementedException();
+            var result = await _service.GetAllByJournal(journalId);
+            if (result == null)
+            {
+                _logger.LogInformation($"Unable to retrieve entries for journal: {journalId}");
+                return new NotFoundResult();
+            }
+            
+            _logger.LogInformation($"Entries retrieved");
+            return new OkObjectResult(result);
         }
 
         [HttpGet("{entryId}")]
