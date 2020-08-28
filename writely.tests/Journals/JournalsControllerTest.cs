@@ -54,7 +54,7 @@ namespace writely.tests.Journals
             _controller = new JournalsController(_mockService.Object, _logger);
 
             var result = await _controller.GetOne(1L);
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace writely.tests.Journals
             _controller = new JournalsController(_mockService.Object, _logger);
 
             var result = await _controller.GetAll("UserId", 5);
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
