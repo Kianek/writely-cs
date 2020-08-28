@@ -76,7 +76,30 @@ namespace writely.Services
 
         public async Task<EntryDto> Update(long journalId, EntryDto entryDto)
         {
-            throw new NotImplementedException();
+            var journal = await _context.Journals.FindAsync(journalId);
+            var existingEntry = journal?.Entries.FirstOrDefault(e => e.Id == entryDto.Id);
+            if (journal == null || existingEntry == null)
+            {
+                return null;
+            }
+            
+            if (ShouldUpdate(existingEntry.Title, entryDto.Title))
+            {
+                existingEntry.Title = entryDto.Title;
+            }
+
+            if (ShouldUpdate(existingEntry.Body, entryDto.Body))
+            {
+                existingEntry.Body = entryDto.Body;
+            }
+
+            _context.UpdateRange(journal, existingEntry);
+            await _context.SaveChangesAsync();
+
+            return new EntryDto(existingEntry);
+
+            bool ShouldUpdate(string originalValue, string newValue)
+                => !string.IsNullOrEmpty(newValue) && originalValue != newValue;
         }
 
         public async Task<EntryDto> MoveEntryToJournal(long entryId, long destinationJournalId)
