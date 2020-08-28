@@ -98,9 +98,9 @@ namespace writely.Services
             if (didUpdate)
             {
                 existingEntry.LastModified = DateTimeOffset.Now;
+                _context.UpdateRange(existingEntry);
+                await _context.SaveChangesAsync();
             }
-            _context.UpdateRange(existingEntry);
-            await _context.SaveChangesAsync();
 
             return new EntryDto(existingEntry);
 
