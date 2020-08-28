@@ -10,6 +10,7 @@ namespace writely.Models.Dto
         public DateTimeOffset LastModified { get; set; }
         public long JournalId { get; set; }
         public string Username { get; set; }
+        public string UserId { get; set; }
 
         public EntryDto()
         {
@@ -24,6 +25,7 @@ namespace writely.Models.Dto
             LastModified = entry.LastModified;
             JournalId = entry.JournalId;
             Username = entry.Username;
+            UserId = entry.UserId;
         }
     }
 }
