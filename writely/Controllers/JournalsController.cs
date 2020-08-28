@@ -56,9 +56,11 @@ namespace writely.Controllers
             var journal = await _service.Add(userId, title);
             if (journal == null)
             {
+                _logger.LogInformation($"Unable to add journal with title: {title}");
                 return new BadRequestResult();
             }
 
+            _logger.LogInformation($"Journal added: {title}");
             return new OkObjectResult(journal);
         }
 
@@ -80,6 +82,7 @@ namespace writely.Controllers
         public async Task<ActionResult> Delete(long journalId)
         {
             await _service.Delete(journalId);
+            _logger.LogInformation($"Journal deleted: {journalId}");
             return new OkResult();
         }
     }
