@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Moq;
 using writely.Controllers;
+using writely.Services;
 using Xunit;
 
 namespace writely.tests.Entries
@@ -10,12 +11,13 @@ namespace writely.tests.Entries
     {
         private ILogger<EntriesController> _logger;
         private EntriesController _controller;
+        private IEntryService _service;
 
         public EntriesControllerTest()
         {
             _logger = new Mock<ILogger<EntriesController>>().Object;
         }
-        
+
         [Fact]
         public async Task GetAll_JournalFound_ReturnsOk() {}
         
