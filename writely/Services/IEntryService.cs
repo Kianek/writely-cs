@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using writely.Models;
 using writely.Models.Dto;
 
 namespace writely.Services
