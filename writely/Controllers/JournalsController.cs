@@ -26,7 +26,7 @@ namespace writely.Controllers
             if (journal == null)
             {
                 _logger.LogInformation($"Unable to locate journal: {journalId}");
-                return new BadRequestResult();
+                return new NotFoundResult();
             }
             
             _logger.LogInformation($"{journal.Id} {journal.Title} located");
@@ -40,7 +40,7 @@ namespace writely.Controllers
             if (journals == null)
             {
                 _logger.LogInformation("Unable to retrieve journals");
-                return new BadRequestResult();
+                return new NotFoundResult();
             }
 
             _logger.LogInformation("Journal/s retrieved");
