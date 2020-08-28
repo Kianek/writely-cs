@@ -136,6 +136,60 @@ namespace writely.tests.Entries
         }
 
         [Fact]
+        public async Task Update_JournalAndEntryFound_Updated_ReturnsOk()
+        {
+            var journal = new Journal
+            {
+                Id = 1L,
+                Title = "My Journal",
+                UserId = "UserId"
+            };
+            journal.Entries.Add(new Entry
+            {
+                Id = 1L,
+                Title = "My Entry",
+                Body = "Skippity doo da",
+                Journal = journal,
+                JournalId = journal.Id,
+                Username = "bob.loblaw",
+                UserId = journal.UserId
+            });
+            
+            var entry = new EntryDto
+            {
+                Id = 1L,
+                Title = "Shiny New Title",
+            };
+
+            await using var context = _fixture.CreateContext();
+            context.Journals.Add(journal);
+            await context.SaveChangesAsync();
+            var service = new EntryService(context);
+
+            var result = await service.Update(journal.Id, entry);
+            result.Title.Should().Be(entry.Title);
+        }
+
+        [Fact]
+        public async Task Update_JournalNotFound_ReturnsNull()
+        {
+            var entry = new EntryDto
+            {
+                Id = 1L,
+                Title = "Blah",
+                Body = "Blah dee frickin' blah",
+                JournalId = 1L,
+                Username = "Blargen",
+                UserId = "UserId"
+            };
+            await using var context = _fixture.CreateContext();
+            var service = new EntryService(context);
+
+            var result = await service.Update(1L, entry);
+            result.Should().BeNull();
+        }
+
+        [Fact]
         public async Task MoveEntryToJournal_JournalFound_EntryMoved()
         {
             var destJournal = CreateJournal();
