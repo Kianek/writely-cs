@@ -56,7 +56,7 @@ namespace writely.Services
             return journal?.Entries.Select(e => new EntryDto(e)).ToList();
         }
 
-        public async Task Delete(long journalId, long id)
+        public async Task Delete(long journalId, long entryId)
         {
             var journal = await _context.Journals
                 .AsTracking()
@@ -68,10 +68,15 @@ namespace writely.Services
                 return;
             }
             
-            journal.Entries = journal.Entries.Where(e => e.Id != id).ToList();
+            journal.Entries = journal.Entries.Where(e => e.Id != entryId).ToList();
             
             _context.Update(journal);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<EntryDto> Update(long journalId, long entryId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<EntryDto> MoveEntryToJournal(long entryId, long destinationJournalId)
