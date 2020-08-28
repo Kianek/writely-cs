@@ -166,7 +166,7 @@ namespace writely.tests.Entries
             await context.SaveChangesAsync();
             var service = new EntryService(context);
 
-            var result = await service.Update(journal.Id, entry);
+            var result = await service.Update(entry);
             result.Title.Should().Be(entry.Title);
         }
 
@@ -185,7 +185,7 @@ namespace writely.tests.Entries
             await using var context = _fixture.CreateContext();
             var service = new EntryService(context);
 
-            var result = await service.Update(1L, entry);
+            var result = await service.Update(entry);
             result.Should().BeNull();
         }
 
