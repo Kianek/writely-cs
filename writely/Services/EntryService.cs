@@ -74,11 +74,10 @@ namespace writely.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<EntryDto> Update(long journalId, EntryDto entryDto)
+        public async Task<EntryDto> Update(EntryDto entryDto)
         {
-            var journal = await _context.Journals.FindAsync(journalId);
-            var existingEntry = journal?.Entries.FirstOrDefault(e => e.Id == entryDto.Id);
-            if (journal == null || existingEntry == null)
+            var existingEntry = await _context.Entries.FindAsync(entryDto.Id);
+            if (existingEntry == null)
             {
                 return null;
             }
