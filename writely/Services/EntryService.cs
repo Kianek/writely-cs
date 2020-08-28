@@ -82,18 +82,25 @@ namespace writely.Services
             {
                 return null;
             }
-            
+
+            bool didUpdate = false;
             if (ShouldUpdate(existingEntry.Title, entryDto.Title))
             {
                 existingEntry.Title = entryDto.Title;
+                didUpdate = true;
             }
 
             if (ShouldUpdate(existingEntry.Body, entryDto.Body))
             {
                 existingEntry.Body = entryDto.Body;
+                didUpdate = true;
             }
 
-            _context.UpdateRange(journal, existingEntry);
+            if (didUpdate)
+            {
+                existingEntry.LastModified = DateTimeOffset.Now;
+            }
+            _context.UpdateRange(existingEntry);
             await _context.SaveChangesAsync();
 
             return new EntryDto(existingEntry);
