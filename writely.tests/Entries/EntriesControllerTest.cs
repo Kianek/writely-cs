@@ -20,12 +20,12 @@ namespace writely.tests.Entries
         public EntriesControllerTest()
         {
             _logger = new Mock<ILogger<EntriesController>>().Object;
+            _service = new Mock<IEntryService>();
         }
 
         [Fact]
         public async Task GetAll_JournalFound_ReturnsOk()
         {
-            _service = new Mock<IEntryService>();
             _service.Setup(s =>
                     s.GetAllByJournal(It.IsAny<long>()))
                 .ReturnsAsync(new List<EntryDto>());
@@ -39,7 +39,6 @@ namespace writely.tests.Entries
         [Fact]
         public async Task GetAll_JournalNotFound_ReturnsNotFound()
         {
-            _service = new Mock<IEntryService>();
             _service.Setup(s =>
                     s.GetAllByJournal(It.IsAny<long>()))
                 .ReturnsAsync(() => null);
@@ -49,9 +48,11 @@ namespace writely.tests.Entries
             var result = await _controller.GetAll(1L);
             result.Should().BeOfType<NotFoundResult>();
         }
-        
+
         [Fact]
-        public async Task GetOne_EntryFound_ReturnsOk() {}
+        public async Task GetOne_EntryFound_ReturnsOk()
+        {
+        }
         
         [Fact]
         public async Task GetOne_EntryNotFound_ReturnsNotFound() {}
