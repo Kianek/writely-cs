@@ -65,7 +65,15 @@ namespace writely.Controllers
         [HttpPatch("{entryId}")]
         public async Task<ActionResult> Update(EntryDto updatedEntry)
         {
-            throw new NotImplementedException();
+            var result = await _service.Update(updatedEntry);
+            if (result == null)
+            {
+                _logger.LogInformation($"Unable to update entry");
+                return BadRequest();
+            }
+            
+            _logger.LogInformation($"Entry updated: {updatedEntry.Id}");
+            return Ok(result);
         }
 
         [HttpDelete("{entryId}")]
