@@ -128,8 +128,17 @@ namespace writely.tests.Entries
             var result = await _controller.Update(new EntryDto());
             result.Should().BeOfType<BadRequestResult>();
         }
-        
+
         [Fact]
-        public async Task Delete_EntryRemoved_ReturnsOk() {}
+        public async Task Delete_EntryRemoved_ReturnsOk()
+        {
+            _service.Setup(s =>
+                s.Delete(It.IsAny<long>(), It.IsAny<long>()));
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.Delete(1L, 1L);
+            result.Should().BeOfType<OkResult>();
+        }
     }
 }
