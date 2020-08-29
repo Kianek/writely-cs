@@ -79,7 +79,9 @@ namespace writely.Controllers
         [HttpDelete("{entryId}")]
         public async Task<ActionResult> Delete(long journalId, long entryId)
         {
-            throw new NotImplementedException();
+            await _service.Delete(journalId, entryId);
+            _logger.LogInformation($"Deleted entry: {entryId}");
+            return Ok();
         }
     }
 }
