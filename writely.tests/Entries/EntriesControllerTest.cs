@@ -101,12 +101,33 @@ namespace writely.tests.Entries
             var result = await _controller.Add("UserId", 1L, new EntryDto());
             result.Should().BeOfType<BadRequestResult>();
         }
-        
+
         [Fact]
-        public async Task Update_EntryFound_Updated_ReturnsOk() {}
-        
+        public async Task Update_EntryFound_Updated_ReturnsOk()
+        {
+            var entry = new EntryDto();
+            _service.Setup(s =>
+                    s.Update(It.IsAny<EntryDto>()))
+                .ReturnsAsync(entry);
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.Update(entry);
+            result.Should().BeOfType<OkObjectResult>();
+        }
+
         [Fact]
-        public async Task Update_EntryNotFound_ReturnsBadRequest() {}
+        public async Task Update_EntryNotFound_ReturnsBadRequest()
+        {
+            _service.Setup(s =>
+                    s.Update(It.IsAny<EntryDto>()))
+                .ReturnsAsync(() => null);
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.Update(new EntryDto());
+            result.Should().BeOfType<BadRequestResult>();
+        }
         
         [Fact]
         public async Task Delete_EntryRemoved_ReturnsOk() {}
