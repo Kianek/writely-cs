@@ -52,13 +52,42 @@ namespace writely.tests.Entries
         [Fact]
         public async Task GetOne_EntryFound_ReturnsOk()
         {
+            _service.Setup(s =>
+                    s.GetById(It.IsAny<long>()))
+                .ReturnsAsync(new EntryDto {Title = "Entry"});
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.GetOne(1L);
+            result.Should().BeOfType<OkObjectResult>();
         }
-        
+
         [Fact]
-        public async Task GetOne_EntryNotFound_ReturnsNotFound() {}
-        
+        public async Task GetOne_EntryNotFound_ReturnsNotFound()
+        {
+            _service.Setup(s =>
+                    s.GetById(It.IsAny<long>()))
+                .ReturnsAsync(() => null);
+
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.GetOne(1L);
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
         [Fact]
-        public async Task Add_JournalFound_EntryAdded_ReturnsOk() {}
+        public async Task Add_JournalFound_EntryAdded_ReturnsOk()
+        {
+            var entry = new EntryDto {Title = "Blah"};
+            _service.Setup(s =>
+                    s.Add(It.IsAny<long>(), It.IsAny<EntryDto>()))
+                .ReturnsAsync(entry);
+            
+            _controller = new EntriesController(_logger, _service.Object);
+
+            var result = await _controller.Add(1L, entry);
+            result.Should().BeOfType<CreatedResult>();
+        }
         
         [Fact]
         public async Task Add_JournalNotFound_ReturnsBadRequest() {}
