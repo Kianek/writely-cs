@@ -9,7 +9,7 @@ namespace writely.Controllers
 {
     [ApiController]
     [Route("api/users/{userId}/journals/{journalId}/entries")]
-    public class EntriesController
+    public class EntriesController : ControllerBase
     {
         private ILogger<EntriesController> _logger;
         private IEntryService _service;
@@ -37,7 +37,15 @@ namespace writely.Controllers
         [HttpGet("{entryId}")]
         public async Task<ActionResult> GetOne(long entryId)
         {
-            throw new NotImplementedException();
+            var result = await _service.GetById(entryId);
+            if (result == null)
+            {
+                _logger.LogInformation($"Unable to retrieve entry: {entryId}");
+                return NotFound();
+            }
+            
+            _logger.LogInformation($"Entry retrieved: {entryId}");
+            return Ok(result);
         }
 
         [HttpPost]
