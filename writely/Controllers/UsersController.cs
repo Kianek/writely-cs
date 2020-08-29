@@ -9,7 +9,7 @@ namespace writely.Controllers
 {
     [ApiController]
     [Route("api/users")]
-    public class UsersController
+    public class UsersController : ControllerBase
     {
         private ILogger<UsersController> _logger;
         private IUserService _userService;
@@ -27,11 +27,11 @@ namespace writely.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation("User registered");
-                return new OkObjectResult("Registration successful");
+                return Ok("Registration successful");
             }
             
             _logger.LogError("Unable to register user");
-            return new BadRequestObjectResult(result.Errors.ToList());
+            return BadRequest(result.Errors.ToList());
         }
 
         [HttpDelete("{id}")]
@@ -41,11 +41,11 @@ namespace writely.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation($"Account deleted for user: {id}");
-                return new OkResult();
+                return Ok();
             }
 
             _logger.LogError($"Unable to delete account for user: {id}");
-            return new BadRequestResult();
+            return BadRequest();
         }
 
         [HttpPut("{id}")]
@@ -55,11 +55,11 @@ namespace writely.Controllers
             if (result.Succeeded)
             {
                 _logger.LogInformation($"Account disabled for user: {id}");
-                return new OkResult();
+                return Ok();
             }
             
             _logger.LogError($"Unable to disable account for user: {id}");
-            return new BadRequestObjectResult("Unable to disable account");
+            return BadRequest("Unable to disable account");
         }
 
         [HttpPut("{id}")]
@@ -68,10 +68,10 @@ namespace writely.Controllers
             var result = await _userService.ChangePassword(id, info.OldPassword, info.NewPassword);
             if (result.Succeeded)
             {
-                return new OkResult();
+                return Ok();
             }
             
-            return new BadRequestResult();
+            return BadRequest();
         }
 
         [HttpGet("{id}")]
@@ -82,10 +82,10 @@ namespace writely.Controllers
             var userData = await _userService.GetUserData(dataService, id);
             if (userData == null)
             {
-                return new NotFoundObjectResult(id);
+                return NotFound(id);
             }
 
-            return new OkObjectResult(userData);
+            return Ok(userData);
         }
     }
 }

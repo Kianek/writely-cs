@@ -8,7 +8,7 @@ namespace writely.Controllers
 {
     [ApiController]
     [Route("api/users/{userId}/journals")]
-    public class JournalsController
+    public class JournalsController : ControllerBase
     {
         private IJournalService _service;
         private ILogger<JournalsController> _logger;
@@ -26,11 +26,11 @@ namespace writely.Controllers
             if (journal == null)
             {
                 _logger.LogInformation($"Unable to locate journal: {journalId}");
-                return new NotFoundResult();
+                return NotFound();
             }
             
             _logger.LogInformation($"{journal.Id} {journal.Title} located");
-            return new OkObjectResult(journal);
+            return Ok(journal);
         }
 
         [HttpGet("{page?}")]
@@ -40,11 +40,11 @@ namespace writely.Controllers
             if (journals == null)
             {
                 _logger.LogInformation("Unable to retrieve journals");
-                return new NotFoundResult();
+                return NotFound();
             }
 
             _logger.LogInformation("Journal/s retrieved");
-            return new OkObjectResult(journals);
+            return Ok(journals);
         }
 
         [HttpPost("{title}")]
@@ -54,11 +54,11 @@ namespace writely.Controllers
             if (journal == null)
             {
                 _logger.LogInformation($"Unable to add journal with title: {title}");
-                return new BadRequestResult();
+                return BadRequest();
             }
 
             _logger.LogInformation($"Journal added: {title}");
-            return new OkObjectResult(journal);
+            return Ok(journal);
         }
 
         [HttpPatch("{journalId}")]
@@ -68,11 +68,11 @@ namespace writely.Controllers
             if (result == null)
             {
                 _logger.LogInformation("Unable to retrieve and update journal");
-                return new BadRequestResult();
+                return BadRequest();
             }
             
             _logger.LogInformation($"Updated journal: {journalId}");
-            return new OkObjectResult(result);
+            return Ok(result);
         }
 
         [HttpDelete("{journalId}")]
@@ -80,7 +80,7 @@ namespace writely.Controllers
         {
             await _service.Delete(journalId);
             _logger.LogInformation($"Journal deleted: {journalId}");
-            return new OkResult();
+            return Ok();
         }
     }
 }
