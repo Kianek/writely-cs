@@ -27,11 +27,11 @@ namespace writely.Controllers
             if (result == null)
             {
                 _logger.LogInformation($"Unable to retrieve entries for journal: {journalId}");
-                return new NotFoundResult();
+                return NotFound();
             }
             
             _logger.LogInformation($"Entries retrieved");
-            return new OkObjectResult(result);
+            return Ok(result);
         }
 
         [HttpGet("{entryId}")]
