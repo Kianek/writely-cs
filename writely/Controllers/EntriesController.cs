@@ -49,9 +49,17 @@ namespace writely.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(long journalId, [FromBody] EntryDto entryDto)
+        public async Task<ActionResult> Add(string userId, long journalId, [FromBody] EntryDto entryDto)
         {
-            throw new NotImplementedException();
+            var result = await _service.Add(journalId, entryDto);
+            if (result == null)
+            {
+                _logger.LogInformation($"Unable to add entry: {entryDto.Title}");
+                return BadRequest();
+            }
+            
+            _logger.LogInformation($"Entry added: {entryDto.Id}");
+            return Created($"api/users/{userId}/journals/{journalId}/entries", result);
         }
 
         [HttpDelete("{entryId}")]
