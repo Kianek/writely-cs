@@ -62,14 +62,14 @@ namespace writely.Controllers
             return Created($"api/users/{userId}/journals/{journalId}/entries", result);
         }
 
-        [HttpDelete("{entryId}")]
-        public async Task<ActionResult> Delete(long journalId, long entryId)
+        [HttpPatch("{entryId}")]
+        public async Task<ActionResult> Update(EntryDto updatedEntry)
         {
             throw new NotImplementedException();
         }
 
-        [HttpPatch("{entryId}")]
-        public async Task<ActionResult> Update(EntryDto updatedEntry)
+        [HttpDelete("{entryId}")]
+        public async Task<ActionResult> Delete(long journalId, long entryId)
         {
             throw new NotImplementedException();
         }
