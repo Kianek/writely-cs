@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using writely.Data;
 using writely.Models;
+using writely.Services;
 
 namespace writely
 {
@@ -23,6 +24,12 @@ namespace writely
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            
+            services.AddTransient<IUserService, UserService>();
+            
+            services.AddTransient<IJournalService, JournalService>();
+            
+            services.AddTransient<IEntryService, EntryService>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
