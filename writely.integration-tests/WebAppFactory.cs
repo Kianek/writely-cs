@@ -1,11 +1,15 @@
 using System;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using writely.Data;
+using writely.Models;
+using writely.Services;
 
 namespace writely.integration_tests
 {
@@ -20,9 +24,34 @@ namespace writely.integration_tests
                         d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
 
                 services.Remove(descriptor);
-
+                
+                services.AddLogging(builder =>
+                {
+                    builder.AddConsole();
+                    builder.AddFilter(level => level >= LogLevel.Trace);
+                });
+                
+                services.AddTransient<IUserService, UserService>();
+                services.AddTransient<IJournalService, JournalService>();
+                services.AddTransient<IEntryService, EntryService>();
+                
+                var connection = new SqliteConnection("DataSource=:memory:;Foreign Keys=false");
+                connection.Open();
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlite("DataSource=:memory:;Foreign Keys=false"));
+                {
+                    options.UseSqlite(connection);
+                    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                });
+                
+                
+                services.AddIdentity<AppUser, IdentityRole>()
+                    .AddDefaultTokenProviders()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
+                
+                services.Configure<IdentityOptions>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                });
 
                 var sp = services.BuildServiceProvider();
                 
@@ -32,6 +61,7 @@ namespace writely.integration_tests
                 var logger = scopedServices
                     .GetRequiredService<ILogger<WebAppFactory<TStartup>>>();
 
+                db.Database.OpenConnection();
                 db.Database.EnsureCreated();
 
                 try
