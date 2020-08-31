@@ -25,6 +25,8 @@ namespace writely
         {
             services.AddControllers();
             
+            services.AddTransient<IAuthService, AuthService>();
+            
             services.AddTransient<IUserService, UserService>();
             
             services.AddTransient<IJournalService, JournalService>();
