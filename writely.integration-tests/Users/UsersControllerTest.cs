@@ -66,6 +66,28 @@ namespace writely.integration_tests.Users
             response.EnsureSuccessStatusCode();
         }
 
+        [Fact]
+        public async Task DisableAccount()
+        {
+            var newUser = new UserRegistrationDto
+            {
+                Email = "john@doemail.com",
+                FirstName = "John",
+                LastName = "Doe",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                Username = "j.doe"
+            };
+
+            var context = _services.GetRequiredService<ApplicationDbContext>();
+            var service = _services.GetRequiredService<IUserService>();
+            await service.Register(newUser);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
+
+            var response = await _client.PutAsync($"/api/users/{user?.Id}/disable", null);
+            response.EnsureSuccessStatusCode();
+        }
+
         public void Dispose()
         {
             _scope.Dispose();
