@@ -83,9 +83,11 @@ namespace writely.Controllers
             var result = await _userService.ChangePassword(id, info.OldPassword, info.NewPassword);
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Password changed for user: {id}");
                 return Ok();
             }
             
+            _logger.LogInformation($"Unable to change password for user: {id}");
             return BadRequest();
         }
 
