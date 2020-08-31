@@ -70,6 +70,34 @@ namespace writely.tests.Users
         }
 
         [Fact]
+        public async Task ActivateAccount_UserFound_AccountActivated_ReturnsOk()
+        {
+            var mockService = new Mock<IUserService>();
+            mockService.Setup(s =>
+                    s.ActivateAccount(It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Success);
+            
+            _controller = new UsersController(mockService.Object, _logger);
+
+            var result = await _controller.ActivateAccount("UserId");
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Fact]
+        public async Task ActivateAccount_UserNotFound_ReturnsBadRequest()
+        {
+            var mockService = new Mock<IUserService>();
+            mockService.Setup(s =>
+                    s.ActivateAccount(It.IsAny<string>()))
+                .ReturnsAsync(IdentityResult.Failed());
+            
+            _controller = new UsersController(mockService.Object, _logger);
+
+            var result = await _controller.ActivateAccount("UserId");
+            result.Should().BeOfType<BadRequestResult>();
+        }
+
+        [Fact]
         public async Task DeleteAccount_DeletionFailed_ReturnsBadRequest()
         {
             var mockService = new Mock<IUserService>();
