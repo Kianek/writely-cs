@@ -29,15 +29,7 @@ namespace writely.integration_tests.Users
         [Fact]
         public async Task RegisterUser()
         {
-            var newUserJson = new UserRegistrationDto
-            {
-                Email = "bob@loblawlaw.com",
-                FirstName = "Bob",
-                LastName = "Loblaw",
-                Username = "bob.loblaw",
-                Password = "Password123!",
-                ConfirmPassword = "Password123!"
-            };
+            var newUserJson = Helpers.CreateRegistrationDto();
 
             using var response = await _client.PostAsync("/api/users", newUserJson.AsStringContent());
             response.EnsureSuccessStatusCode();
@@ -46,15 +38,7 @@ namespace writely.integration_tests.Users
         [Fact]
         public async Task ActivateAccount()
         {
-            var newUser = new UserRegistrationDto
-            {
-                Email = "john@doemail.com",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "Password123!",
-                ConfirmPassword = "Password123!",
-                Username = "j.doe"
-            };
+            var newUser = Helpers.CreateRegistrationDto();
 
             var context = _services.GetRequiredService<ApplicationDbContext>();
             var service = _services.GetRequiredService<IUserService>();
@@ -69,15 +53,7 @@ namespace writely.integration_tests.Users
         [Fact]
         public async Task DeleteAccount()
         {
-            var newUser = new UserRegistrationDto
-            {
-                Email = "john@doemail.com",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "Password123!",
-                ConfirmPassword = "Password123!",
-                Username = "j.doe"
-            };
+            var newUser = Helpers.CreateRegistrationDto();
 
             var context = _services.GetRequiredService<ApplicationDbContext>();
             var service = _services.GetRequiredService<IUserService>();
@@ -92,22 +68,14 @@ namespace writely.integration_tests.Users
         [Fact]
         public async Task DisableAccount()
         {
-            var newUser = new UserRegistrationDto
-            {
-                Email = "john@doemail.com",
-                FirstName = "John",
-                LastName = "Doe",
-                Password = "Password123!",
-                ConfirmPassword = "Password123!",
-                Username = "j.doe"
-            };
+            var newUser = Helpers.CreateRegistrationDto();
 
             var context = _services.GetRequiredService<ApplicationDbContext>();
             var service = _services.GetRequiredService<IUserService>();
             await service.Register(newUser);
             var user = await context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
 
-            var response = await _client.PutAsync($"/api/users/{user?.Id}/disable", null);
+            var response = await _client.PatchAsync($"/api/users/{user?.Id}/disable", null);
             response.EnsureSuccessStatusCode();
         }
 
