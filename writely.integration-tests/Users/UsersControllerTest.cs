@@ -8,9 +8,9 @@ using writely.Models.Dto;
 using writely.Services;
 using Xunit;
 
-namespace writely.integration_tests
+namespace writely.integration_tests.Users
 {
-    public class UsersControllerTest : IClassFixture<WebAppFactory<writely.Startup>>, IDisposable
+    public class UsersControllerTest : IClassFixture<WebAppFactory<Startup>>, IDisposable
     {
         private HttpClient _client;
         private WebAppFactory<Startup> _factory;
