@@ -44,6 +44,29 @@ namespace writely.integration_tests.Users
         }
 
         [Fact]
+        public async Task ActivateAccount()
+        {
+            var newUser = new UserRegistrationDto
+            {
+                Email = "john@doemail.com",
+                FirstName = "John",
+                LastName = "Doe",
+                Password = "Password123!",
+                ConfirmPassword = "Password123!",
+                Username = "j.doe"
+            };
+
+            var context = _services.GetRequiredService<ApplicationDbContext>();
+            var service = _services.GetRequiredService<IUserService>();
+            await service.Register(newUser);
+            var user = await context.Users.FirstOrDefaultAsync(u => 
+                u.Email == newUser.Email);
+
+            var response = await _client.PatchAsync($"/api/users/{user?.Id}/activate", null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Fact]
         public async Task DeleteAccount()
         {
             var newUser = new UserRegistrationDto
