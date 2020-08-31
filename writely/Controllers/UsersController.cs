@@ -49,7 +49,7 @@ namespace writely.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{id}/activate")]
+        [HttpPatch("{id}/activate")]
         public async Task<ActionResult> ActivateAccount(string id)
         {
             var result = await _userService.ActivateAccount(id);
@@ -63,7 +63,7 @@ namespace writely.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{id}/disable")]
+        [HttpPatch("{id}/disable")]
         public async Task<ActionResult> DisableAccount(string id)
         {
             var result = await _userService.DisableAccount(id);
