@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,12 @@ namespace writely.Controllers
 
             _logger.LogError($"Unable to delete account for user: {id}");
             return BadRequest();
+        }
+
+        [HttpPut("{id}/activate")]
+        public async Task<ActionResult> ActivateAccount(string id)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpPut("{id}/disable")]
