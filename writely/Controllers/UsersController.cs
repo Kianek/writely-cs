@@ -48,7 +48,7 @@ namespace writely.Controllers
             return BadRequest();
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/disable")]
         public async Task<ActionResult> DisableAccount(string id)
         {
             var result = await _userService.DisableAccount(id);
