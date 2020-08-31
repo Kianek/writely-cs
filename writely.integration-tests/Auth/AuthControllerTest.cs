@@ -38,5 +38,12 @@ namespace writely.integration_tests.Auth
                 "/api/auth/login", creds.AsStringContent());
             result.EnsureSuccessStatusCode();
         }
+
+        [Fact]
+        public async Task Logout_ReturnsOk()
+        {
+            var response = await _client.GetAsync("/api/auth/logout");
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
