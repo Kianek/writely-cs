@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using writely.Data;
-using writely.Models;
 using writely.Services;
 
 namespace writely.integration_tests
@@ -30,7 +29,8 @@ namespace writely.integration_tests
                     builder.AddConsole();
                     builder.AddFilter(level => level >= LogLevel.Trace);
                 });
-                
+
+                services.AddTransient<IAuthService, AuthService>();
                 services.AddTransient<IUserService, UserService>();
                 services.AddTransient<IJournalService, JournalService>();
                 services.AddTransient<IEntryService, EntryService>();
@@ -42,11 +42,6 @@ namespace writely.integration_tests
                     options.UseSqlite(connection);
                     options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 });
-                
-                
-                services.AddIdentity<AppUser, IdentityRole>()
-                    .AddDefaultTokenProviders()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
                 
                 services.Configure<IdentityOptions>(options =>
                 {
