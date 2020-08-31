@@ -10,20 +10,25 @@ namespace writely.Services
     public class AuthService : IAuthService
     {
         private readonly SignInManager<AppUser> _manager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public AuthService(SignInManager<AppUser> manager)
+        public AuthService(SignInManager<AppUser> manager, UserManager<AppUser> userManager)
         {
             _manager = manager;
+            _userManager = userManager;
         }
 
-        public Task<SignInResult> Login(UserLoginDto credentials)
+        public async Task<SignInResult> Login(UserLoginDto creds)
         {
-            throw new System.NotImplementedException();
+            var user = await _userManager.FindByEmailAsync(creds.Email);
+            if (user == null)
+            {
+                return SignInResult.Failed;
+            }
+            
+            return await _manager.PasswordSignInAsync(user.UserName, creds.Password, creds.RememberMe, true);
         }
 
-        public Task Logout()
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task Logout() => await _manager.SignOutAsync();
     }
 }
