@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -37,7 +36,10 @@ namespace writely.Controllers
         [HttpGet("logout")]
         public async Task<ActionResult> SignOut()
         {
-            throw new NotImplementedException();
+            await _service.Logout();
+            var user = HttpContext.User.Identity.Name;
+            _logger.LogInformation($"User {user} signed out");
+            return Ok();
         }
     }
 }
