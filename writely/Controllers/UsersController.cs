@@ -99,9 +99,11 @@ namespace writely.Controllers
             var userData = await _userService.GetUserData(dataService, id);
             if (userData == null)
             {
+                _logger.LogInformation($"Unable to load data for user: {id}");
                 return NotFound(id);
             }
 
+            _logger.LogInformation($"Unable to load data for user: {id}");
             return Ok(userData);
         }
     }
