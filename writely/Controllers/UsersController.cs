@@ -52,7 +52,15 @@ namespace writely.Controllers
         [HttpPut("{id}/activate")]
         public async Task<ActionResult> ActivateAccount(string id)
         {
-            throw new NotImplementedException();
+            var result = await _userService.ActivateAccount(id);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation($"Account activate for user: {id}");
+                return Ok();
+            }
+
+            _logger.LogInformation($"Unable to activate account for user: {id}");
+            return BadRequest();
         }
 
         [HttpPut("{id}/disable")]
