@@ -74,6 +74,13 @@ namespace writely.integration_tests.Users
                 var response = await _client.DeleteAsync($"/api/users/{_user?.Id}");
                 response.EnsureSuccessStatusCode();
             }
+
+            [Fact]
+            public async Task GetUserData()
+            {
+                var response = await _client.GetAsync($"/api/users/{_user?.Id}");
+                response.EnsureSuccessStatusCode();
+            }
         }
     }
 }
