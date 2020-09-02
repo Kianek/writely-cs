@@ -19,7 +19,7 @@ namespace writely.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{journalId}")]
+        [HttpGet("{journalId:long}")]
         public async Task<ActionResult> GetOne(long journalId)
         {
             var journal = await _service.GetById(journalId);
@@ -33,7 +33,7 @@ namespace writely.Controllers
             return Ok(journal);
         }
 
-        [HttpGet("{page?}")]
+        [HttpGet]
         public async Task<ActionResult> GetAll(string userId, int page = 0)
         {
             var journals = await _service.GetAll(userId, page);
