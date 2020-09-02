@@ -2,8 +2,8 @@ namespace writely.Models.Dto
 {
     public class UpdatePasswordDto
     {
-        public string OldPassword { get; }
-        public string NewPassword { get; }
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
 
         public UpdatePasswordDto()
         {
