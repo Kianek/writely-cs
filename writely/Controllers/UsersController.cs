@@ -80,7 +80,7 @@ namespace writely.Controllers
             return BadRequest("Unable to disable account");
         }
 
-        [HttpPut("{id}")]
+        [HttpPatch("{id}/change-password")]
         public async Task<ActionResult> ChangePassword(string id, [FromBody]UpdatePasswordDto info)
         {
             var result = await _userService.ChangePassword(id, info.OldPassword, info.NewPassword);
