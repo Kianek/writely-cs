@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -29,6 +30,11 @@ namespace writely.integration_tests
                     builder.AddConsole();
                     builder.AddFilter(level => level >= LogLevel.Trace);
                 });
+
+                services.AddAuthentication("Test")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+
+                services.AddAuthorization();
 
                 services.AddTransient<IAuthService, AuthService>();
                 services.AddTransient<IUserService, UserService>();
