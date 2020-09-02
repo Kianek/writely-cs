@@ -81,7 +81,7 @@ namespace writely.Controllers
         }
 
         [HttpPatch("{id}/change-password")]
-        public async Task<ActionResult> ChangePassword(string id, [FromBody]UpdatePasswordDto info)
+        public async Task<ActionResult> ChangePassword(string id, UpdatePasswordDto info)
         {
             var result = await _userService.ChangePassword(id, info.OldPassword, info.NewPassword);
             if (result.Succeeded)
