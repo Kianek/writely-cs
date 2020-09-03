@@ -21,7 +21,7 @@ namespace writely.Services
         public async Task<JournalDto> Add(string userId, string title)
         {
             var journal = await _context.Journals
-                .Where(j => j.UserId == userId)
+                .Where(j => j.Title == title)
                 .SingleOrDefaultAsync();
             if (journal != null)
             {
