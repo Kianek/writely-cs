@@ -106,7 +106,7 @@ namespace writely.tests.Journals
 
             _controller = new JournalsController(_mockService.Object, _logger);
 
-            var result = await _controller.Add(userId, title);
+            var result = await _controller.Add(userId, new NewJournalDto {Title = title});
             result.Should().BeOfType<OkObjectResult>();
         }
 
@@ -119,7 +119,7 @@ namespace writely.tests.Journals
 
             _controller = new JournalsController(_mockService.Object, _logger);
 
-            var result = await _controller.Add("UserId", "Existing Title");
+            var result = await _controller.Add("UserId", new NewJournalDto {Title = "My Title"});
             result.Should().BeOfType<BadRequestResult>();
         }
 
