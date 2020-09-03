@@ -47,17 +47,17 @@ namespace writely.Controllers
             return Ok(journals);
         }
 
-        [HttpPost("{title}")]
-        public async Task<ActionResult> Add(string userId, string title)
+        [HttpPost]
+        public async Task<ActionResult> Add(string userId, NewJournalDto newJournal)
         {
-            var journal = await _service.Add(userId, title);
+            var journal = await _service.Add(userId, newJournal.Title);
             if (journal == null)
             {
-                _logger.LogInformation($"Unable to add journal with title: {title}");
+                _logger.LogInformation($"Unable to add journal with title: {newJournal.Title}");
                 return BadRequest();
             }
 
-            _logger.LogInformation($"Journal added: {title}");
+            _logger.LogInformation($"Journal added: {newJournal.Title}");
             return Ok(journal);
         }
 
