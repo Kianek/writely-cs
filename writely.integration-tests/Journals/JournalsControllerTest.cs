@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using writely.Models;
+using writely.Models.Dto;
 using writely.Services;
 using Xunit;
 
@@ -14,28 +15,40 @@ namespace writely.integration_tests.Journals
         
         public JournalsControllerTest(WebAppFactory<Startup> factory) : base(factory)
         {
-            _user = SetUpUser().Result;
-            _baseUrl = $"/api/users/{_user.Id}/journals";
             _service = _services.GetRequiredService<IJournalService>();
         }
 
         [Fact]
         public async Task GetOne()
         {
+            _user = await SetUpUser();
             var journal = await _service.Add(_user.Id, "Super Duper Journal");
-            var url = $"{_baseUrl}/{journal.Id}";
             
-            var response = await _client.GetAsync(url);
+            var response = await _client.GetAsync(URL(_user.Id, journal.Id));
             response.EnsureSuccessStatusCode();
         }
-        
+
         [Fact]
         public async Task GetAll()
-        {}
+        {
+            _user = await SetUpUser();
+            await _service.Add(_user.Id, "Some Journal");
+            await _service.Add(_user.Id, "Some Other Journal");
+            await _service.Add(_user.Id, "Squishy Journal");
+
+            var response = await _client.GetAsync(URL(_user.Id));
+            response.EnsureSuccessStatusCode();
+        }
 
         [Fact]
         public async Task Add()
-        {}
+        {
+            _user = await SetUpUser();
+            var journal = new NewJournalDto {Title = "Shiny New Title"};
+            
+            var response = await _client.PostAsync(URL(_user.Id), journal.AsStringContent());
+            response.EnsureSuccessStatusCode();
+        }
         
         [Fact]
         public async Task Update()
@@ -44,5 +57,8 @@ namespace writely.integration_tests.Journals
         [Fact]
         public async Task Delete()
         {}
+
+        private string URL(string userId, long journalId) => $"{URL(userId)}/{journalId}";
+        private string URL(string userId) => $"/api/users/{userId}/journals";
     }
 }
