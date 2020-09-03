@@ -49,14 +49,29 @@ namespace writely.integration_tests.Journals
             var response = await _client.PostAsync(URL(_user.Id), journal.AsStringContent());
             response.EnsureSuccessStatusCode();
         }
-        
+
         [Fact]
         public async Task Update()
-        {}
+        {
+            _user = await SetUpUser();
+            const string title = "Look at My New Title";
+
+            var journal = await _service.Add(_user.Id, "Stodgy, Old Title");
+            journal.Title = title;
+
+            var response = await _client.PatchAsync(URL(_user.Id, journal.Id), journal.AsStringContent());
+            response.EnsureSuccessStatusCode();
+        }
 
         [Fact]
         public async Task Delete()
-        {}
+        {
+            _user = new AppUser();
+            var journal = await _service.Add(_user.Id, "Lookie Here");
+
+            var response = await _client.DeleteAsync(URL(_user.Id, journal.Id));
+            response.EnsureSuccessStatusCode();
+        }
 
         private string URL(string userId, long journalId) => $"{URL(userId)}/{journalId}";
         private string URL(string userId) => $"/api/users/{userId}/journals";
