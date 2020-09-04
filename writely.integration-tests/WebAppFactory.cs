@@ -60,19 +60,9 @@ namespace writely.integration_tests
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<ApplicationDbContext>();
-                var logger = scopedServices
-                    .GetRequiredService<ILogger<WebAppFactory<TStartup>>>();
-
+                
                 db.Database.OpenConnection();
                 db.Database.EnsureCreated();
-
-                try
-                {
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error seeding database: {message}", ex.Message);
-                }
             });
         }
     }
