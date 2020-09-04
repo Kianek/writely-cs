@@ -26,7 +26,7 @@ namespace writely.Services
 
         public async Task<EntryDto> Add(long journalId, EntryDto entryDto)
         {
-            var journal = await _context.Journals.FindAsync(journalId);
+            var journal = await _context.Journals.AsTracking().FirstOrDefaultAsync(j => j.Id == journalId);
             if (journal == null)
             {
                 return null;
@@ -40,7 +40,7 @@ namespace writely.Services
             };
             
             journal.Entries.Add(entry);
-            _context.Update(journal);
+            _context.Journals.Update(journal);
             await _context.SaveChangesAsync();
             
             return new EntryDto(entry);
