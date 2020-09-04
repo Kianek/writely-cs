@@ -48,7 +48,7 @@ namespace writely.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(string userId, long journalId, [FromBody] EntryDto entryDto)
+        public async Task<ActionResult> Add(string userId, long journalId, EntryDto entryDto)
         {
             var result = await _service.Add(journalId, entryDto);
             if (result == null)
