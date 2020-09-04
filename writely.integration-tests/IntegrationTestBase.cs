@@ -51,15 +51,20 @@ namespace writely.integration_tests
 
         public async Task<AppUser> SetUpUser()
         {
-            var context = await GetContext();
-            await context.Database.EnsureDeletedAsync();
-            await context.Database.EnsureCreatedAsync();
+            await ResetDatabase();
             var newUser = Helpers.CreateRegistrationDto();
             var service = await GetUserService();
             await service.Register(newUser);
             await SignInUser(newUser);
 
             return await GetUserByEmail(newUser.Email);
+        }
+
+        public async Task ResetDatabase()
+        {
+            var context = await GetContext();
+            await context.Database.EnsureDeletedAsync();
+            await context.Database.EnsureCreatedAsync();
         }
 
         public void Dispose()
