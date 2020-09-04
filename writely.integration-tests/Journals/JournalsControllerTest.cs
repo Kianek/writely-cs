@@ -66,7 +66,7 @@ namespace writely.integration_tests.Journals
         [Fact]
         public async Task Delete()
         {
-            _user = new AppUser();
+            _user = await SetUpUser();
             var journal = await _service.Add(_user.Id, "Lookie Here");
 
             var response = await _client.DeleteAsync(URL(_user.Id, journal.Id));
