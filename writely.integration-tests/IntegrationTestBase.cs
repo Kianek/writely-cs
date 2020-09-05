@@ -18,7 +18,7 @@ namespace writely.integration_tests
         protected IServiceScope _scope;
         protected IServiceProvider _services;
 
-        public IntegrationTestBase(WebAppFactory<Startup> factory)
+        protected IntegrationTestBase(WebAppFactory<Startup> factory)
         {
             _client = factory.CreateClient(
                 new WebApplicationFactoryClientOptions
@@ -31,13 +31,13 @@ namespace writely.integration_tests
             _services = _scope.ServiceProvider;
         }
 
-        public async Task<ApplicationDbContext> GetContext() => _services.GetRequiredService<ApplicationDbContext>();
+        protected ApplicationDbContext GetContext() => _services.GetRequiredService<ApplicationDbContext>();
         
-        public async Task<IUserService> GetUserService() => _services.GetRequiredService<IUserService>();
+        protected IUserService GetUserService() => _services.GetRequiredService<IUserService>();
 
         public async Task<AppUser> GetUserByEmail(string email)
         {
-            var context = await GetContext();
+            var context = GetContext();
 
             return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
@@ -53,7 +53,7 @@ namespace writely.integration_tests
         {
             await ResetDatabase();
             var newUser = Helpers.CreateRegistrationDto();
-            var service = await GetUserService();
+            var service = GetUserService();
             await service.Register(newUser);
             await SignInUser(newUser);
 
@@ -62,7 +62,7 @@ namespace writely.integration_tests
 
         public async Task ResetDatabase()
         {
-            var context = await GetContext();
+            var context = GetContext();
             await context.Database.EnsureDeletedAsync();
             await context.Database.EnsureCreatedAsync();
         }
