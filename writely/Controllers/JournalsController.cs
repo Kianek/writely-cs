@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using writely.Models.Dto;
@@ -6,6 +7,7 @@ using writely.Services;
 
 namespace writely.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/users/{userId}/journals")]
     public class JournalsController : ControllerBase
