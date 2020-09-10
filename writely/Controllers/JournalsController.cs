@@ -21,7 +21,7 @@ namespace writely.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{journalId:long}")]
+        [HttpGet("{journalId}")]
         public async Task<ActionResult> GetOne(long journalId)
         {
             var journal = await _service.GetById(journalId);
