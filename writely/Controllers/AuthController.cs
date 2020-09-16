@@ -20,13 +20,15 @@ namespace writely.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> SignIn(UserLoginDto credentials)
+        public async Task<ActionResult> SignIn(UserLoginDto credentials, 
+            [FromServices] IUserService userService)
         {
             var result = await _service.Login(credentials);
             if (result.Succeeded)
             {
                 _logger.LogInformation($"User {credentials.Email} logged in successfully");
-                return Ok();
+                var signedInUser = await userService.GetSignedInUser(credentials.Email);
+                return Ok(signedInUser);
             }
             
             _logger.LogInformation($"Log in unsuccessful");
