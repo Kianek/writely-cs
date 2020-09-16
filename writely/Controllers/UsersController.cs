@@ -106,6 +106,7 @@ namespace writely.Controllers
             }
 
             _logger.LogInformation($"Unable to load data for user: {id}");
+            Response.Headers["Content-Disposition"] = "attachment; filename=user-data.json; filename*=user-data.json";
             return Ok(userData);
         }
     }
