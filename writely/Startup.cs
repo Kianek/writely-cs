@@ -29,6 +29,8 @@ namespace writely
             
             services.AddTransient<IUserService, UserService>();
             
+            services.AddTransient<IUserDataService, UserDataService>();
+            
             services.AddTransient<IJournalService, JournalService>();
             
             services.AddTransient<IEntryService, EntryService>();
