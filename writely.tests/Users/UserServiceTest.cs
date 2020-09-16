@@ -65,6 +65,25 @@ namespace writely.tests.Users
         }
 
         [Fact]
+        public async void GetSignedInUser_SignInSuccesful_ReturnsUserDto()
+        {
+            const string userId = "UserId";
+            var user = new AppUser()
+            {
+                Id = userId
+            };
+
+            _mockUserManager.Setup(um =>
+                    um.FindByEmailAsync(It.IsAny<string>()))
+                .ReturnsAsync(() => user);
+            
+            var service = new UserService(_mockUserManager.Object);
+            var result = await service.GetSignedInUser(userId);
+
+            result.Should().BeOfType<UserDto>();
+        }
+
+        [Fact]
         public async void DeleteAccount_UserDeleted_Successful()
         {
             const string userId = "UserId";
