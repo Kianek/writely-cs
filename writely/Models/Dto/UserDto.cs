@@ -8,12 +8,21 @@ namespace writely.Models.Dto
         public string Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
-        public DateTimeOffset LastModified { get; set; }
-        public List<JournalDto> Journals { get; set; } = new List<JournalDto>();
 
         public UserDto()
         {
+        }
+
+        public UserDto(AppUser user)
+        {
+            if (user == null)
+            {
+                throw new NullReferenceException("AppUser reference is null");
+            }
+            
+            Id = user.Id;
+            Username = user.UserName;
+            Email = user.Email;
         }
     }
 }
