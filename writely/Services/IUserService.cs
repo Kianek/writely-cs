@@ -9,6 +9,7 @@ namespace writely.Services
     public interface IUserService
     {
         Task<IdentityResult> Register(UserRegistrationDto registration);
+        Task<UserDto> GetSignedInUser(string email);
         Task<IdentityResult> DeleteAccount(string id);
         Task<IdentityResult> ActivateAccount(string id);
         Task<IdentityResult> ChangePassword(string id, string oldPassword, string newPassword);

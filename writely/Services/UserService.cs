@@ -32,6 +32,12 @@ namespace writely.Services
             return await _userManager.CreateAsync(newUser, registration.Password);
         }
 
+        public async Task<UserDto> GetSignedInUser(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return new UserDto(user);
+        }
+
         public async Task<IdentityResult> DeleteAccount(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
