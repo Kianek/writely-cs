@@ -11,7 +11,6 @@ namespace writely.integration_tests.Journals
     {
         private AppUser _user;
         private IJournalService _service;
-        private string _baseUrl;
         
         public JournalsControllerTest(WebAppFactory<Startup> factory) : base(factory)
         {
