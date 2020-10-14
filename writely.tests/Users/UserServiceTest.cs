@@ -14,8 +14,8 @@ namespace writely.tests.Users
         private readonly Mock<UserManager<AppUser>> _mockUserManager;
         private readonly UserRegistrationDto _registration;
 
-        public UserServiceTest() 
-        { 
+        public UserServiceTest()
+        {
             _mockUserManager = GetMockUserManager();
             _registration = new UserRegistrationDto
             {
@@ -32,21 +32,21 @@ namespace writely.tests.Users
         public async void Register_UniqueUser_Successful()
         {
             _mockUserManager.Setup(
-                    um => 
+                    um =>
                         um.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
-                .ReturnsAsync(IdentityResult.Success).Verifiable();
+                .ReturnsAsync(IdentityResult.Success);
 
             var service = new UserService(_mockUserManager.Object);
             var result = await service.Register(_registration);
             result.Succeeded.Should().BeTrue();
         }
-        
+
         [Fact]
         public async void Register_PasswordMismatch_Fail()
         {
             string password2 = "Password123jawefioj";
             _registration.ConfirmPassword = password2;
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.Register(_registration);
             result.Succeeded.Should().BeFalse();
@@ -58,7 +58,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                     um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new AppUser());
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.Register(_registration);
             result.Succeeded.Should().BeFalse();
@@ -74,11 +74,11 @@ namespace writely.tests.Users
             };
 
             _mockUserManager.Setup(um =>
-                    um.FindByEmailAsync(It.IsAny<string>()))
+                    um.FindByEmailAsync(userId))
                 .ReturnsAsync(() => user);
-            
+
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.GetSignedInUser(userId);
+            var result = await service.GetSignedInUser("OtherId");
 
             result.Should().BeOfType<UserDto>();
         }
@@ -91,7 +91,7 @@ namespace writely.tests.Users
             {
                 Id = userId
             };
-            
+
             _mockUserManager.Setup(um =>
                     um.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
@@ -99,7 +99,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                     um.DeleteAsync(It.IsAny<AppUser>()))
                 .ReturnsAsync(IdentityResult.Success);
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.DeleteAccount(userId);
             result.Succeeded.Should().BeTrue();
@@ -115,7 +115,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                     um.DeleteAsync(It.IsAny<AppUser>()))
                 .ReturnsAsync(IdentityResult.Failed());
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.DeleteAccount("UserId");
             result.Succeeded.Should().BeFalse();
@@ -124,14 +124,14 @@ namespace writely.tests.Users
         [Fact]
         public async void ActivateAccount_UserFound_Activate_Successful()
         {
-            var user = new AppUser {Id = "UserId", IsAccountActive = false};
+            var user = new AppUser { Id = "UserId", IsAccountActive = false };
             _mockUserManager.Setup(um =>
                     um.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(user);
             _mockUserManager.Setup(um =>
                     um.UpdateAsync(It.IsAny<AppUser>()))
                 .ReturnsAsync(IdentityResult.Success);
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.ActivateAccount(user.Id);
             result.Succeeded.Should().BeTrue();
@@ -143,7 +143,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                     um.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.ActivateAccount("UserId");
             result.Succeeded.Should().BeFalse();
@@ -155,12 +155,12 @@ namespace writely.tests.Users
             const string userId = "UserId";
             _mockUserManager.Setup(um =>
                     um.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(new AppUser { Id = userId, IsAccountActive = true});
+                .ReturnsAsync(new AppUser { Id = userId, IsAccountActive = true });
 
             _mockUserManager.Setup(um =>
                     um.UpdateAsync(It.IsAny<AppUser>()))
                 .ReturnsAsync(IdentityResult.Success);
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.DisableAccount(userId);
             result.Succeeded.Should().BeTrue();
@@ -172,7 +172,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                 um.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.DisableAccount("UserId");
             result.Succeeded.Should().BeFalse();
@@ -186,7 +186,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                     um.ChangePasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success);
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.ChangePassword("UserId", oldPassword, newPassword);
             result.Succeeded.Should().BeTrue();
@@ -198,7 +198,7 @@ namespace writely.tests.Users
             _mockUserManager.Setup(um =>
                     um.ChangePasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Failed());
-            
+
             var service = new UserService(_mockUserManager.Object);
             var result = await service.ChangePassword("UserId", "Blah123", "Newblah123");
             result.Succeeded.Should().BeFalse();
@@ -207,12 +207,12 @@ namespace writely.tests.Users
         [Fact]
         public async void GetUserData_UserFound_DataReturned_Success()
         {
-            var userData = new UserData(new AppUser {Id = "UserId"});
+            var userData = new UserData(new AppUser { Id = "UserId" });
             var mockUserDataService = new Mock<IUserDataService>();
             mockUserDataService.Setup(uds =>
                     uds.LoadUserData(It.IsAny<string>()))
                 .ReturnsAsync(userData);
-            
+
             var service = new UserService(GetMockUserManager().Object);
             var result = await service.GetUserData(
                 mockUserDataService.Object, It.IsAny<string>());
@@ -226,7 +226,7 @@ namespace writely.tests.Users
             mockUserDataService.Setup(uds =>
                     uds.LoadUserData(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
-            
+
             var service = new UserService(GetMockUserManager().Object);
             var result = await service.GetUserData(
                 mockUserDataService.Object, It.IsAny<string>());
@@ -238,6 +238,6 @@ namespace writely.tests.Users
             var userStoreMock = new Mock<IUserStore<AppUser>>();
             return new Mock<UserManager<AppUser>>(
                 userStoreMock.Object, null, null, null, null, null, null, null, null);
-        }    
+        }
     }
 }
