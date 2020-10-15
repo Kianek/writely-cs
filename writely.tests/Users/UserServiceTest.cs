@@ -65,7 +65,7 @@ namespace writely.tests.Users
         }
 
         [Fact]
-        public async void GetSignedInUser_SignInSuccesful_ReturnsUserDto()
+        public async void GetSignedInUser_SignInSuccessful_ReturnsUserDto()
         {
             const string userId = "UserId";
             var user = new AppUser()
