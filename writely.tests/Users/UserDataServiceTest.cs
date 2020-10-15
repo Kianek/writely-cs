@@ -11,6 +11,13 @@ namespace writely.tests.Users
 {
     public class UserDataServiceTest
     {
+        private Mock<ApplicationDbContext> _mockContext;
+
+        public UserDataServiceTest()
+        {
+            _mockContext = GenerateMockDbContext();
+        }
+
         [Fact]
         public async void LoadUserData_UserFound_Success()
         {
@@ -20,12 +27,11 @@ namespace writely.tests.Users
                 Id = userId
             };
 
-            var mockContext = GenerateMockDbContext();
-            mockContext.Setup(ctx =>
+            _mockContext.Setup(ctx =>
                     ctx.Users.FindAsync(It.IsAny<string>()))
                 .ReturnsAsync(appUser);
             
-            var dataService = new UserDataService(mockContext.Object);
+            var dataService = new UserDataService(_mockContext.Object);
             var result = await dataService.LoadUserData(userId);
             result.Should().BeOfType<UserData>().And.NotBeNull();
         }
@@ -33,12 +39,11 @@ namespace writely.tests.Users
         [Fact]
         public async void LoadUserData_UserNotFound_Fail()
         {
-            var mockContext = GenerateMockDbContext();
-            mockContext.Setup(ctx =>
+            _mockContext.Setup(ctx =>
                     ctx.Users.FindAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
             
-            var service = new UserDataService(mockContext.Object);
+            var service = new UserDataService(_mockContext.Object);
             var result = await service.LoadUserData("userId");
             result.Should().BeNull();
         }
