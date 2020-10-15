@@ -78,7 +78,7 @@ namespace writely.tests.Users
                 .ReturnsAsync(() => user);
 
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.GetSignedInUser("OtherId");
+            var result = await service.GetSignedInUser(userId);
 
             result.Should().BeOfType<UserDto>();
         }
@@ -92,9 +92,7 @@ namespace writely.tests.Users
                 Id = userId
             };
 
-            _mockUserManager.Setup(um =>
-                    um.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
+            SetupFindById(user);
 
             _mockUserManager.Setup(um =>
                     um.DeleteAsync(It.IsAny<AppUser>()))
@@ -125,12 +123,8 @@ namespace writely.tests.Users
         public async void ActivateAccount_UserFound_Activate_Successful()
         {
             var user = new AppUser { Id = "UserId", IsAccountActive = false };
-            _mockUserManager.Setup(um =>
-                    um.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(user);
-            _mockUserManager.Setup(um =>
-                    um.UpdateAsync(It.IsAny<AppUser>()))
-                .ReturnsAsync(IdentityResult.Success);
+            SetupFindById(user);
+            SetupUpdateSuccessful();
 
             var service = new UserService(_mockUserManager.Object);
             var result = await service.ActivateAccount(user.Id);
@@ -153,13 +147,8 @@ namespace writely.tests.Users
         public async void DisableAccount_UserFound_Disable_Successful()
         {
             const string userId = "UserId";
-            _mockUserManager.Setup(um =>
-                    um.FindByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(new AppUser { Id = userId, IsAccountActive = true });
-
-            _mockUserManager.Setup(um =>
-                    um.UpdateAsync(It.IsAny<AppUser>()))
-                .ReturnsAsync(IdentityResult.Success);
+            SetupFindById(new AppUser { Id = userId, IsAccountActive = true });
+            SetupUpdateSuccessful();
 
             var service = new UserService(_mockUserManager.Object);
             var result = await service.DisableAccount(userId);
@@ -231,6 +220,20 @@ namespace writely.tests.Users
             var result = await service.GetUserData(
                 mockUserDataService.Object, It.IsAny<string>());
             result.Should().BeNull();
+        }
+
+        private void SetupFindById(AppUser user)
+        {
+            _mockUserManager.Setup(um =>
+                    um.FindByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(user);
+        }
+
+        private void SetupUpdateSuccessful()
+        {
+            _mockUserManager.Setup(um =>
+                    um.UpdateAsync(It.IsAny<AppUser>()))
+                .ReturnsAsync(IdentityResult.Success);
         }
 
         private Mock<UserManager<AppUser>> GetMockUserManager()
