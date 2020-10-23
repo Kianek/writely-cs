@@ -36,7 +36,7 @@ namespace writely.Services
             {
                 Title = entryDto.Title, Body = entryDto.Body,
                 Journal = journal, JournalId = journalId,
-                UserId = journal.UserId, Username = entryDto.Username
+                UserId = journal.UserId
             };
             
             journal.Entries.Add(entry);
