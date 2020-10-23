@@ -86,7 +86,7 @@ namespace writely.integration_tests.Entries
         }
 
         private EntryDto CreateEntryDto(AppUser user, string title)
-            => new EntryDto { Title = title, Body = "Lookie here", Username = user.UserName, UserId = user.Id };
+            => new EntryDto { Title = title, Body = "Lookie here", UserId = user.Id };
 
         private string URL(string userId, long journalId) => $"api/users/{userId}/journals/{journalId}/entries";
 

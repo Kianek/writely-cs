@@ -179,7 +179,6 @@ namespace writely.tests.Entries
                 Title = "Blah",
                 Body = "Blah dee frickin' blah",
                 JournalId = 1L,
-                Username = "Blargen",
                 UserId = "UserId"
             };
             await using var context = _fixture.CreateContext();
