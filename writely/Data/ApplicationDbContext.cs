@@ -64,9 +64,6 @@ namespace writely.Data
                 entry.Property(e => e.UserId)
                     .IsRequired();
 
-                entry.Property(e => e.Username)
-                    .IsRequired();
-
                 entry
                     .HasOne(e => e.Journal)
                     .WithMany(j => j.Entries);
