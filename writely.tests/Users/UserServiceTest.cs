@@ -64,8 +64,11 @@ namespace writely.tests.Users
                 .ReturnsAsync(new AppUser());
 
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.Register(_registration);
-            result.Succeeded.Should().BeFalse();
+            service
+                .Invoking(us => us.Register(_registration))
+                .Should()
+                .Throw<DuplicateEmailException>()
+                .WithMessage("*: bob@gmail.com");
         }
 
         [Fact]
