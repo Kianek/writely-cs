@@ -160,8 +160,10 @@ namespace writely.tests.Users
                 .ReturnsAsync(() => null);
 
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.ActivateAccount("UserId");
-            result.Succeeded.Should().BeFalse();
+            service
+                .Invoking(us => us.ActivateAccount("UserId"))
+                .Should()
+                .Throw<UserNotFoundException>();
         }
 
         [Fact]
@@ -184,8 +186,10 @@ namespace writely.tests.Users
                 .ReturnsAsync(() => null);
 
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.DisableAccount("UserId");
-            result.Succeeded.Should().BeFalse();
+            service
+                .Invoking(us => us.DisableAccount("UserId"))
+                .Should()
+                .Throw<UserNotFoundException>();
         }
 
         [Fact]
