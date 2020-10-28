@@ -5,11 +5,11 @@ using Xunit;
 
 namespace writely.integration_tests.Auth
 {
-    public class AuthControllerTest : IClassFixture<WebAppFactory<writely.Startup>>
+    public class AuthControllerTest : IClassFixture<WebAppFactory<Startup>>
     {
         private HttpClient _client;
 
-        public AuthControllerTest(WebAppFactory<writely.Startup> factory)
+        public AuthControllerTest(WebAppFactory<Startup> factory)
         {
             _client = factory.CreateClient();
         }
