@@ -214,8 +214,10 @@ namespace writely.tests.Users
                 .ReturnsAsync(IdentityResult.Failed());
 
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.ChangePassword("UserId", "Blah123", "Newblah123");
-            result.Succeeded.Should().BeFalse();
+            service
+                .Invoking(us => us.ChangePassword("UserId", "Blah123", "Newblah123"))
+                .Should()
+                .Throw<UserNotFoundException>();
         }
 
         [Fact]
