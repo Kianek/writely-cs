@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -88,6 +89,21 @@ namespace writely.tests.Users
             var result = await service.GetSignedInUser(userId);
 
             result.Should().BeOfType<UserDto>();
+        }
+
+        [Fact]
+        public void GetSignedInUser_SignInUnsuccessful_ThrowsUserNotFound()
+        {
+            var email = "jim@gmail.com";
+            _mockUserManager.Setup(um =>
+                    um.FindByEmailAsync(email))
+                .ReturnsAsync(() => null);
+            
+            var service = new UserService(_mockUserManager.Object);
+            service
+                .Invoking(us => us.GetSignedInUser(email))
+                .Should()
+                .Throw<UserNotFoundException>();
         }
 
         [Fact]
