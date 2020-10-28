@@ -5,6 +5,8 @@
     <UserSecretsId>7bc20de2-ab3d-4ee8-8b0d-d439cca9d362</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="Exceptions" />
+    <Folder Include="Migrations" />
     <Folder Include="Models\" />
     <Folder Include="Services\" />
     <Folder Include="Data\" />
