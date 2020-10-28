@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -19,13 +20,13 @@ namespace writely.Services
         {
             if (registration.Password != registration.ConfirmPassword)
             {
-                return IdentityResult.Failed();
+                throw new PasswordMismatchException("Passwords must match");
             }
 
             var user = await _userManager.FindByEmailAsync(registration.Email);
             if (user != null)
             {
-                return IdentityResult.Failed(GenerateError("Email already registered"));
+                throw new DuplicateEmailException($"Email already registered: {registration.Email}");
             }
             
             var newUser = new AppUser(registration);
@@ -35,6 +36,11 @@ namespace writely.Services
         public async Task<UserDto> GetSignedInUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                throw new UserNotFoundException($"User not found: {email}");
+            }
+            
             return new UserDto(user);
         }
 
@@ -43,7 +49,7 @@ namespace writely.Services
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return IdentityResult.Failed(GenerateError("Error deleting account"));
+                throw new UserNotFoundException($"User not found: {id}");
             }
             
             return await _userManager.DeleteAsync(user);
@@ -54,8 +60,9 @@ namespace writely.Services
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return IdentityResult.Failed(GenerateError("User not found"));
+                throw new UserNotFoundException($"User not found: {id}");
             }
+            
             user.IsAccountActive = true;
             return await _userManager.UpdateAsync(user);
         }
@@ -65,7 +72,7 @@ namespace writely.Services
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
-                return IdentityResult.Failed(GenerateError("Unable to locate user"));
+                throw new UserNotFoundException($"User not found: {id}");
             }
             
             user.IsAccountActive = false;
@@ -75,20 +82,17 @@ namespace writely.Services
         public async Task<IdentityResult> ChangePassword(string id, string oldPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                throw new UserNotFoundException($"User not found: {id}");
+            }
+            
             return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
         }
 
         public async Task<UserData> GetUserData([FromServices] IUserDataService dataService, string id)
         {
             return await dataService.LoadUserData(id);
-        }
-
-        private IdentityError GenerateError(string description = "")
-        {
-            return new IdentityError
-            {
-                Description = description
-            };
         }
     }
 }
