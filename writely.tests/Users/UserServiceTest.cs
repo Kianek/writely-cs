@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using FluentAssertions.Common;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
@@ -48,8 +49,11 @@ namespace writely.tests.Users
             _registration.ConfirmPassword = password2;
 
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.Register(_registration);
-            result.Succeeded.Should().BeFalse();
+            service
+                .Invoking(us => us.Register(_registration))
+                .Should()
+                .Throw<PasswordMismatchException>()
+                .WithMessage("Passwords must match");
         }
 
         [Fact]
