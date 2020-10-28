@@ -58,7 +58,7 @@ namespace writely.tests.Users
         }
 
         [Fact]
-        public async void Register_UserNotUnique_Fail()
+        public async void Register_UserNotUnique_ThrowsDuplicateEmailException()
         {
             _mockUserManager.Setup(um =>
                     um.FindByEmailAsync(It.IsAny<string>()))
@@ -92,7 +92,7 @@ namespace writely.tests.Users
         }
 
         [Fact]
-        public void GetSignedInUser_SignInUnsuccessful_ThrowsUserNotFound()
+        public void GetSignedInUser_SignInUnsuccessful_ThrowsUserNotFoundException()
         {
             var email = "jim@gmail.com";
             _mockUserManager.Setup(um =>
@@ -127,19 +127,17 @@ namespace writely.tests.Users
         }
 
         [Fact]
-        public async void DeleteAccount_UserNotFound_Fail()
+        public async void DeleteAccount_UserNotFound_ThrowsUserNotFoundException()
         {
             _mockUserManager.Setup(um =>
                     um.FindByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
 
-            _mockUserManager.Setup(um =>
-                    um.DeleteAsync(It.IsAny<AppUser>()))
-                .ReturnsAsync(IdentityResult.Failed());
-
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.DeleteAccount("UserId");
-            result.Succeeded.Should().BeFalse();
+            service
+                .Invoking(us => us.DeleteAccount("UserId"))
+                .Should()
+                .Throw<UserNotFoundException>();
         }
 
         [Fact]
