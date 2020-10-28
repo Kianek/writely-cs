@@ -27,6 +27,7 @@ namespace writely.Services
             var journalExistsByTitle = journal != null;
             if (journalExistsByTitle)
             {
+                // TODO: throw new DuplicateTitleException
                 return null;
             }
             
@@ -42,9 +43,11 @@ namespace writely.Services
             var journal = await _context.Journals.FindAsync(updatedJournal.Id);
             if (journal == null)
             {
+                // TODO: throw new JournalNotFoundException
                 return null;
             }
             
+            // TODO: check whether new title exists; if so, throw new DuplicateTitleException
             journal.Title = updatedJournal.Title;
             journal.LastModified = DateTime.Now;
             _context.Journals.Update(journal);
@@ -79,6 +82,7 @@ namespace writely.Services
 
         public async Task<JournalDto> GetById(long id)
         {
+            // TODO: throw JournalNotFoundException
             return await _context.Journals
                 .Where(j => j.Id == id)
                 .Include(j => j.Entries)
