@@ -46,7 +46,7 @@ namespace writely.Services
             }
             
             journal.Title = updatedJournal.Title;
-            journal.LastModified = DateTimeOffset.Now;
+            journal.LastModified = DateTime.Now;
             _context.Journals.Update(journal);
             await _context.SaveChangesAsync();
             

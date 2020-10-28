@@ -97,7 +97,7 @@ namespace writely.Services
 
             if (didUpdate)
             {
-                existingEntry.LastModified = DateTimeOffset.Now;
+                existingEntry.LastModified = DateTime.Now;
                 _context.UpdateRange(existingEntry);
                 await _context.SaveChangesAsync();
             }
@@ -123,14 +123,14 @@ namespace writely.Services
             // Link entry to destination journal
             entry.JournalId = destinationJournalId;
             entry.Journal = destinationJournal;
-            entry.LastModified = DateTimeOffset.Now;
+            entry.LastModified = DateTime.Now;
             
             destinationJournal.Entries.Add(entry);
-            destinationJournal.LastModified = DateTimeOffset.Now;
+            destinationJournal.LastModified = DateTime.Now;
             
             // Remove entry from source journal
             sourceJournal.Entries = sourceJournal.Entries.FindAll(e => e.Id != entryId);
-            sourceJournal.LastModified = DateTimeOffset.Now;
+            sourceJournal.LastModified = DateTime.Now;
             
             _context.UpdateRange(entry, destinationJournal, sourceJournal);
             await _context.SaveChangesAsync();
