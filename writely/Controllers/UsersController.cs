@@ -13,8 +13,8 @@ namespace writely.Controllers
     [Route("api/users")]
     public class UsersController : ControllerBase
     {
-        private ILogger<UsersController> _logger;
-        private IUserService _userService;
+        private readonly ILogger<UsersController> _logger;
+        private readonly IUserService _userService;
         
         public UsersController(IUserService userService, ILogger<UsersController> logger)
         {
@@ -106,7 +106,6 @@ namespace writely.Controllers
             }
 
             _logger.LogInformation($"Unable to load data for user: {id}");
-            Response.Headers["Content-Disposition"] = "attachment; filename=user-data.json; filename*=user-data.json";
             return Ok(userData);
         }
     }
