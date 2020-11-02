@@ -45,8 +45,11 @@ namespace writely.Services
             {
                 throw new JournalNotFoundException($"Journal not found: {updatedJournal.Title}");
             }
+            if (journal.Title == updatedJournal.Title)
+            {
+                throw new DuplicateJournalException($"Journal already exists: {updatedJournal.Title}");
+            }
             
-            // TODO: check whether new title exists; if so, throw new DuplicateTitleException
             journal.Title = updatedJournal.Title;
             journal.LastModified = DateTime.Now;
             _context.Journals.Update(journal);
