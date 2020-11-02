@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using writely.Data;
 using writely.Exceptions;
-using writely.Models;
 using writely.Models.Dto;
 
 namespace writely.Services
