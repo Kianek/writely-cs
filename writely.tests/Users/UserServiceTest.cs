@@ -195,14 +195,22 @@ namespace writely.tests.Users
         [Fact]
         public async void ChangePassword_UserFound_PasswordChanged_Successful()
         {
-            const string oldPassword = "SpiffyNewPassword123";
+            // Arrange 
+            const string userId = "UserId";
+            const string oldPassword = "SpiffyPassword123";
             const string newPassword = "SpiffyNewPassword123";
+
+            // Act
+            _mockUserManager.Setup(um =>
+                    um.FindByIdAsync(userId))
+                .ReturnsAsync(new AppUser {Id = userId});
             _mockUserManager.Setup(um =>
                     um.ChangePasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(IdentityResult.Success);
 
+            // Assert
             var service = new UserService(_mockUserManager.Object);
-            var result = await service.ChangePassword("UserId", oldPassword, newPassword);
+            var result = await service.ChangePassword(userId, oldPassword, newPassword);
             result.Succeeded.Should().BeTrue();
         }
 
