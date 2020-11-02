@@ -52,7 +52,6 @@ namespace writely.tests.Users
             _controller = new UsersController(mockService.Object, _logger);
 
             var result = await _controller.Register(invalidRegistration);
-
             result.Should().BeOfType<BadRequestObjectResult>();
         }
 
@@ -113,15 +112,21 @@ namespace writely.tests.Users
         [Fact]
         public async Task GetUserData_UserFound_ReturnsOk()
         {
+            const string userId = "UserId";
+            var userData = new UserData();
+            
             var mockDataService = new Mock<IUserDataService>();
+            mockDataService.Setup(ds =>
+                    ds.LoadUserData(userId))
+                .ReturnsAsync(userData);
             var mockService = new Mock<IUserService>();
             mockService.Setup(s =>
-                    s.GetUserData(mockDataService.Object, It.IsAny<string>()))
-                .ReturnsAsync(new UserData());
+                    s.GetUserData(mockDataService.Object, userId))
+                .ReturnsAsync(userData);
             
             _controller = new UsersController(mockService.Object, _logger);
 
-            var result = await _controller.GetUserData("UserId", mockDataService.Object);
+            var result = await _controller.GetUserData(userId, mockDataService.Object);
             result.Should().BeOfType<OkObjectResult>();
         }
 
