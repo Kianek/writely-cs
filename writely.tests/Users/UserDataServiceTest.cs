@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using writely.Data;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
@@ -48,12 +49,12 @@ namespace writely.tests.Users
                     ctx.Users.FindAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
             
-            // Act
+            // Act & assert
             var service = new UserDataService(_mockContext.Object);
-            var result = await service.LoadUserData("userId");
-            
-            // Assert
-            result.Should().BeNull();
+            service
+                .Invoking(s => s.LoadUserData("BlahId"))
+                .Should()
+                .Throw<UserNotFoundException>();
         }
 
         private Mock<ApplicationDbContext> GenerateMockDbContext()
