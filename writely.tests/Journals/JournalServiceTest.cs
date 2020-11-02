@@ -86,8 +86,9 @@ namespace writely.tests.Journals
             var service = new JournalService(_context);
             var journal = new JournalDto {Id = 1L};
             
-            var result = await service.Update(journal);
-            result.Should().BeNull();
+            service.Invoking(s => s.Update(journal))
+                .Should()
+                .Throw<JournalNotFoundException>();
         }
         
         [Fact]
