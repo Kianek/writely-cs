@@ -90,6 +90,20 @@ namespace writely.tests.Journals
                 .Should()
                 .Throw<JournalNotFoundException>();
         }
+
+        [Fact]
+        public async Task Update_JournalFound_DuplicateTitle_ThrowsDuplicateJournalException()
+        {
+            await PrepareDatabase();
+            PopulateJournals("UserId");
+
+            var journal = new JournalDto { Id = 1L, Title = "Journal 1", UserId = "UserId"};
+            var service = new JournalService(_context);
+            service
+                .Invoking(s => s.Update(journal))
+                .Should()
+                .Throw<DuplicateJournalException>();
+        }
         
         [Fact]
         public async void Delete_JournalFound_JournalRemoved()
@@ -182,7 +196,7 @@ namespace writely.tests.Journals
         {
             for (var i = 0; i < 8; i++)
             {
-                _context.Journals.Add(new Journal {Title = $"Journal {i+1}", UserId = userId});
+                _context.Journals.Add(new Journal {Title = $"Journal {i+1}", Id = i+1, UserId = userId});
             }
         }
 
