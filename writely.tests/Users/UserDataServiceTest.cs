@@ -21,6 +21,7 @@ namespace writely.tests.Users
         [Fact]
         public async void LoadUserData_UserFound_Success()
         {
+            // Arrange
             const string userId = "UserId";
             var appUser = new AppUser
             {
@@ -31,20 +32,27 @@ namespace writely.tests.Users
                     ctx.Users.FindAsync(It.IsAny<string>()))
                 .ReturnsAsync(appUser);
             
+            // Act
             var dataService = new UserDataService(_mockContext.Object);
             var result = await dataService.LoadUserData(userId);
+            
+            // Assert
             result.Should().BeOfType<UserData>().And.NotBeNull();
         }
 
         [Fact]
         public async void LoadUserData_UserNotFound_Fail()
         {
+            // Arrange
             _mockContext.Setup(ctx =>
                     ctx.Users.FindAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => null);
             
+            // Act
             var service = new UserDataService(_mockContext.Object);
             var result = await service.LoadUserData("userId");
+            
+            // Assert
             result.Should().BeNull();
         }
 
