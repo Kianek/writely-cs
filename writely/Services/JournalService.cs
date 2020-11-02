@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using writely.Data;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -27,8 +28,7 @@ namespace writely.Services
             var journalExistsByTitle = journal != null;
             if (journalExistsByTitle)
             {
-                // TODO: throw new DuplicateTitleException
-                return null;
+                throw new DuplicateJournalException($"Title already exists: {title}");
             }
             
             journal = new Journal {Title = title, UserId = userId};
@@ -43,8 +43,7 @@ namespace writely.Services
             var journal = await _context.Journals.FindAsync(updatedJournal.Id);
             if (journal == null)
             {
-                // TODO: throw new JournalNotFoundException
-                return null;
+                throw new JournalNotFoundException($"Journal not found: {updatedJournal.Title}");
             }
             
             // TODO: check whether new title exists; if so, throw new DuplicateTitleException
