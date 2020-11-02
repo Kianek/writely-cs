@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using writely.Exceptions;
@@ -92,7 +93,15 @@ namespace writely.Services
 
         public async Task<UserData> GetUserData([FromServices] IUserDataService dataService, string id)
         {
-            return await dataService.LoadUserData(id);
+            try
+            {
+                return await dataService.LoadUserData(id);
+            }
+            catch (UserNotFoundException ex)
+            {
+                Exception notFoundException = new Exception(ex.Message, ex);
+                throw notFoundException;
+            }
         }
     }
 }
