@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using writely.Data;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
@@ -35,7 +36,7 @@ namespace writely.tests.Journals
         }
 
         [Fact]
-        public async void Add_ExistingTitle_JournalNotAdded()
+        public async void Add_ExistingTitle_ThrowsDuplicateJournalException()
         {
             const string userId = "UserId";
             const string title = "Super Samey Title";
@@ -46,9 +47,10 @@ namespace writely.tests.Journals
             await _context.SaveChangesAsync();
             
             var service = new JournalService(_context);
-            var result = await service.Add(userId, title);
-
-            result.Should().BeNull();
+            service
+                .Invoking(js => js.Add(userId, title))
+                .Should()
+                .Throw<DuplicateJournalException>();
         }
         
         [Fact]
