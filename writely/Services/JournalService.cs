@@ -84,12 +84,18 @@ namespace writely.Services
 
         public async Task<JournalDto> GetById(long id)
         {
-            // TODO: throw JournalNotFoundException
-            return await _context.Journals
-                .Where(j => j.Id == id)
-                .Include(j => j.Entries)
-                .Select(j => new JournalDto(j))
-                .SingleOrDefaultAsync();
+            var journal = await _context.Journals
+                    .Where(j => j.Id == id)
+                    .Include(j => j.Entries)
+                    .Select(j => new JournalDto(j))
+                    .FirstOrDefaultAsync();
+
+            if (journal == null)
+            {
+                throw new JournalNotFoundException($"Journal not found: {id}");
+            }
+            
+            return journal;
         }
     }
 }
