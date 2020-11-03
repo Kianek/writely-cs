@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using writely.Data;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 
@@ -21,6 +22,10 @@ namespace writely.Services
         public async Task<EntryDto> GetById(long id)
         {
             var entry = await _context.Entries.FindAsync(id);
+            if (entry == null)
+            {
+                throw new EntryNotFoundException($"Entry not found: {id}");
+            }
             return new EntryDto(entry);
         }
 
@@ -29,6 +34,7 @@ namespace writely.Services
             var journal = await _context.Journals.AsTracking().FirstOrDefaultAsync(j => j.Id == journalId);
             if (journal == null)
             {
+                // TODO: throw JournalNotFoundException
                 return null;
             }
             
@@ -65,6 +71,7 @@ namespace writely.Services
                 .FirstOrDefaultAsync();
             if (journal == null)
             {
+                // TODO: throw JournalNotFoundException
                 return;
             }
             
@@ -79,6 +86,7 @@ namespace writely.Services
             var existingEntry = await _context.Entries.FindAsync(entryDto.Id);
             if (existingEntry == null)
             {
+                // TODO: throw new EntryNotFoundException
                 return null;
             }
 
