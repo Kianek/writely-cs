@@ -34,8 +34,7 @@ namespace writely.Services
             var journal = await _context.Journals.AsTracking().FirstOrDefaultAsync(j => j.Id == journalId);
             if (journal == null)
             {
-                // TODO: throw JournalNotFoundException
-                return null;
+                throw new JournalNotFoundException($"Journal not found: {journalId}");
             }
             
             var entry = new Entry
