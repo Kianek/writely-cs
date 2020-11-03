@@ -157,18 +157,17 @@ namespace writely.tests.Entries
         }
 
         [Fact]
-        public async Task Delete_JournalNotFound_ReturnsNull()
+        public void Delete_JournalNotFound_ThrowsJournalNotFoundException()
         {
             // Arrange
             const long entryId = 1L;
             var service = new EntryService(_context);
 
-            // Act
-            await service.Delete(1L, entryId);
-            var result = await _context.Entries.FindAsync(entryId);
-            
-            // Assert
-            result.Should().BeNull();
+            // Act & assert
+            service
+                .Invoking(s => s.Delete(1L, entryId))
+                .Should()
+                .Throw<JournalNotFoundException>();
         }
 
         [Fact]
