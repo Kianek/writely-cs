@@ -88,6 +88,16 @@ namespace writely.tests.Entries
         }
 
         [Fact]
+        public void Add_JournalNotFound_ThrowsJournalNotFoundException()
+        {
+            var service = new EntryService(_context);
+            service
+                .Invoking(s => s.Add(1L, new EntryDto()))
+                .Should()
+                .Throw<JournalNotFoundException>();
+        }
+
+        [Fact]
         public async Task GetAllByJournal_JournalFound_ReturnsEntries()
         {
             // Arrange
