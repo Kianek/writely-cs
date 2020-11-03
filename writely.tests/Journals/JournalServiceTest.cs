@@ -95,7 +95,7 @@ namespace writely.tests.Journals
         public async Task Update_JournalFound_DuplicateTitle_ThrowsDuplicateJournalException()
         {
             await PrepareDatabase();
-            PopulateJournals("UserId");
+            PopulateJournals();
 
             var journal = new JournalDto { Id = 1L, Title = "Journal 1", UserId = "UserId"};
             var service = new JournalService(_context);
@@ -149,7 +149,7 @@ namespace writely.tests.Journals
             
             await PrepareDatabase();
             
-            PopulateJournals(userId);
+            PopulateJournals(5);
             await _context.SaveChangesAsync();
             
             var service = new JournalService(_context);
@@ -165,13 +165,13 @@ namespace writely.tests.Journals
 
             await PrepareDatabase();
             
-            PopulateJournals(userId);
+            PopulateJournals(4);
             await _context.SaveChangesAsync();
             
             var service = new JournalService(_context);
             var result = await service.GetAll(userId);
 
-            result.Should().HaveCount(8);
+            result.Should().HaveCount(4);
         }
         
         [Fact]
@@ -192,11 +192,22 @@ namespace writely.tests.Journals
             result.Title.Should().Be(title);
         }
 
-        private void PopulateJournals(string userId)
+        [Fact]
+        public async Task GetById_JournalNotFound_ThrowsJournalNotFoundException()
         {
-            for (var i = 0; i < 8; i++)
+            await PrepareDatabase();
+            var service = new JournalService(_context);
+            service
+                .Invoking(s => s.GetById(1L))
+                .Should()
+                .Throw<JournalNotFoundException>();
+        }
+
+        private void PopulateJournals(int numOfJournals = 1)
+        {
+            for (var i = 0; i < numOfJournals; i++)
             {
-                _context.Journals.Add(new Journal {Title = $"Journal {i+1}", Id = i+1, UserId = userId});
+                _context.Journals.Add(new Journal {Title = $"Journal {i+1}", Id = i+1, UserId = "UserId"});
             }
         }
 
