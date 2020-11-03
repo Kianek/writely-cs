@@ -230,6 +230,16 @@ namespace writely.tests.Entries
         }
 
         [Fact]
+        public void Update_EntryNotFound_ThrowsException()
+        {
+            var service = new EntryService(_context);
+            service
+                .Invoking(s => s.Update(new EntryDto()))
+                .Should()
+                .Throw<EntryNotFoundException>();
+        }
+
+        [Fact]
         public async Task MoveEntryToJournal_JournalFound_EntryMoved()
         {
             // Arrange
