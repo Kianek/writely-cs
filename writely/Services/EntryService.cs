@@ -70,8 +70,7 @@ namespace writely.Services
                 .FirstOrDefaultAsync();
             if (journal == null)
             {
-                // TODO: throw JournalNotFoundException
-                return;
+                throw new JournalNotFoundException($"Journal not found: {journalId}");
             }
             
             journal.Entries = journal.Entries.Where(e => e.Id != entryId).ToList();
