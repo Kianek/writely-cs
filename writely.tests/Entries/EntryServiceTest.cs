@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using writely.Data;
+using writely.Exceptions;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
@@ -41,6 +42,16 @@ namespace writely.tests.Entries
             // Assert
             result.Should().NotBeNull();
             result.Title.Should().Be(entry.Title);
+        }
+
+        [Fact]
+        public void GetById_EntryNotFound_ThrowsEntryNotFoundException()
+        {
+            var service = new EntryService(_context);
+            service
+                .Invoking(s => s.GetById(1L))
+                .Should()
+                .Throw<EntryNotFoundException>();
         }
 
         [Fact]
