@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using writely.Data;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
@@ -10,16 +11,17 @@ namespace writely.tests.Entries
 {
     public class EntryServiceTest : IDisposable
     {
-        private DatabaseFixture _fixture;
+        private readonly ApplicationDbContext _context;
 
         public EntryServiceTest()
         {
-            _fixture = new DatabaseFixture();
+            _context = new DatabaseFixture().CreateContext();
         }
 
         [Fact]
         public async Task GetById_EntryFound_ReturnsDto()
         {
+            // Arrange
             var journal = CreateJournal();
             var entry = new Entry
             {
@@ -29,13 +31,14 @@ namespace writely.tests.Entries
             };
             journal.Entries.Add(entry);
 
-            await using var context = _fixture.CreateContext();
-            context.Journals.Add(journal);
-            await context.SaveChangesAsync();
+            _context.Journals.Add(journal);
+            await _context.SaveChangesAsync();
             
-            var service = new EntryService(context);
+            // Act
+            var service = new EntryService(_context);
             var result = await service.GetById(entry.Id);
 
+            // Assert
             result.Should().NotBeNull();
             result.Title.Should().Be(entry.Title);
         }
@@ -43,16 +46,18 @@ namespace writely.tests.Entries
         [Fact]
         public async Task Add_JournalFound_EntryAdded()
         {
+            // Arrange
             var journal = CreateJournal();
             var entry = CreateEntry();
 
-            await using var context = _fixture.CreateContext();
-            context.Journals.Add(journal);
-            await context.SaveChangesAsync();
+            _context.Journals.Add(journal);
+            await _context.SaveChangesAsync();
             
-            var service = new EntryService(context);
+            // Act
+            var service = new EntryService(_context);
             var result = await service.Add(journal.Id, new EntryDto(entry));
 
+            // Assert
             result.Should().NotBeNull();
             result.Title.Should().Be(entry.Title);
         }
@@ -60,18 +65,21 @@ namespace writely.tests.Entries
         [Fact]
         public async Task Add_JournalNotFound_ReturnsNull()
         {
-            await using var context = _fixture.CreateContext();
+            // Arrange
             var entry = CreateEntry();
             
-            var service = new EntryService(context);
+            // Act
+            var service = new EntryService(_context);
             var result = await service.Add(1L, new EntryDto(entry));
 
+            // Assert
             result.Should().BeNull();
         }
 
         [Fact]
         public async Task GetAllByJournal_JournalFound_ReturnsEntries()
         {
+            // Arrange
             var journal = CreateJournal();
             Entry entry;
             for (var i = 0; i < 5; i++)
@@ -82,12 +90,14 @@ namespace writely.tests.Entries
                 journal.Entries.Add(entry);
             }
             
-            await using var context = _fixture.CreateContext();
-            context.Journals.Add(journal);
-            await context.SaveChangesAsync();
+            _context.Journals.Add(journal);
+            await _context.SaveChangesAsync();
             
-            var service = new EntryService(context);
+            // Act
+            var service = new EntryService(_context);
             var result = await service.GetAllByJournal(journal.Id);
+            
+            // Assert
             result.Should().NotBeNullOrEmpty();
             result.Should().HaveCount(5);
         }
@@ -95,49 +105,55 @@ namespace writely.tests.Entries
         [Fact]
         public async Task GetAllByJournal_JournalNotFound_ReturnsNull()
         {
-            await using var context = _fixture.CreateContext();
-            var service = new EntryService(context);
+            // Act
+            var service = new EntryService(_context);
             var result = await service.GetAllByJournal(1L);
 
+            // Assert
             result.Should().BeNull();
         }
 
         [Fact]
         public async Task Delete_JournalFound_EntryFoundAndDeleted()
         {
+            // Arrange
             var journal = CreateJournal();
             var entry = CreateEntry();
             entry.Journal = journal;
             entry.JournalId = journal.Id;
             journal.Entries.Add(entry);
 
-            await using var context = _fixture.CreateContext();
-            context.Journals.Add(journal);
-            await context.SaveChangesAsync();
+            _context.Journals.Add(journal);
+            await _context.SaveChangesAsync();
             
-            var service = new EntryService(context);
+            // Act
+            var service = new EntryService(_context);
             await service.Delete(journal.Id, entry.Id);
-
-            var result = await context.Entries.FindAsync(entry.Id);
+            var result = await _context.Entries.FindAsync(entry.Id);
+            
+            // Assert
             result.Should().BeNull();
         }
 
         [Fact]
         public async Task Delete_JournalNotFound_ReturnsNull()
         {
+            // Arrange
             const long entryId = 1L;
-            await using var context = _fixture.CreateContext();
-            var service = new EntryService(context);
+            var service = new EntryService(_context);
 
+            // Act
             await service.Delete(1L, entryId);
-
-            var result = await context.Entries.FindAsync(entryId);
+            var result = await _context.Entries.FindAsync(entryId);
+            
+            // Assert
             result.Should().BeNull();
         }
 
         [Fact]
         public async Task Update_JournalAndEntryFound_Updated_ReturnsOk()
         {
+            // Arrange
             var journal = new Journal
             {
                 Id = 1L,
@@ -161,18 +177,21 @@ namespace writely.tests.Entries
                 Title = "Shiny New Title",
             };
 
-            await using var context = _fixture.CreateContext();
-            context.Journals.Add(journal);
-            await context.SaveChangesAsync();
-            var service = new EntryService(context);
-
+            _context.Journals.Add(journal);
+            await _context.SaveChangesAsync();
+            
+            // Act
+            var service = new EntryService(_context);
             var result = await service.Update(entry);
+            
+            // Assert
             result.Title.Should().Be(entry.Title);
         }
 
         [Fact]
         public async Task Update_JournalNotFound_ReturnsNull()
         {
+            // Arrange
             var entry = new EntryDto
             {
                 Id = 1L,
@@ -181,16 +200,19 @@ namespace writely.tests.Entries
                 JournalId = 1L,
                 UserId = "UserId"
             };
-            await using var context = _fixture.CreateContext();
-            var service = new EntryService(context);
-
+            
+            // Act
+            var service = new EntryService(_context);
             var result = await service.Update(entry);
+            
+            // Assert
             result.Should().BeNull();
         }
 
         [Fact]
         public async Task MoveEntryToJournal_JournalFound_EntryMoved()
         {
+            // Arrange
             var destJournal = CreateJournal();
             destJournal.Id = 2L;
             destJournal.Title = "Journal 2";
@@ -201,28 +223,31 @@ namespace writely.tests.Entries
             entry.JournalId = srcJournal.Id;
             srcJournal.Entries.Add(entry);
 
-            await using var context = _fixture.CreateContext();
-            context.Journals.AddRange(srcJournal, destJournal);
-            await context.SaveChangesAsync();
-            var service = new EntryService(context);
-
+            _context.Journals.AddRange(srcJournal, destJournal);
+            await _context.SaveChangesAsync();
+            
+            // Act
+            var service = new EntryService(_context);
             var result = await service.MoveEntryToJournal(entry.Id, destJournal.Id);
+            
+            // Assert
             result.JournalId.Should().Be(destJournal.Id);
         }
 
         [Fact]
         public async Task MoveEntryToJournal_JournalNotFound_ReturnsNull()
         {
-            await using var context = _fixture.CreateContext();
-            var service = new EntryService(context);
-
+            // Act
+            var service = new EntryService(_context);
             var result = await service.MoveEntryToJournal(1L, 1L);
+            
+            // Assert
             result.Should().BeNull();
         }
 
         public void Dispose()
         {
-            _fixture.Dispose();
+            _context.Dispose();
         }
 
         private Entry CreateEntry() => new Entry
