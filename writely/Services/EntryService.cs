@@ -84,8 +84,7 @@ namespace writely.Services
             var existingEntry = await _context.Entries.FindAsync(entryDto.Id);
             if (existingEntry == null)
             {
-                // TODO: throw new EntryNotFoundException
-                return null;
+                throw new EntryNotFoundException($"Entry not found: {entryDto.Id}");
             }
 
             bool didUpdate = false;
