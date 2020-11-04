@@ -74,20 +74,6 @@ namespace writely.tests.Entries
         }
         
         [Fact]
-        public async Task Add_JournalNotFound_ReturnsNull()
-        {
-            // Arrange
-            var entry = CreateEntry();
-            
-            // Act
-            var service = new EntryService(_context);
-            var result = await service.Add(1L, new EntryDto(entry));
-
-            // Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
         public void Add_JournalNotFound_ThrowsJournalNotFoundException()
         {
             var service = new EntryService(_context);
@@ -206,27 +192,6 @@ namespace writely.tests.Entries
             
             // Assert
             result.Title.Should().Be(entry.Title);
-        }
-
-        [Fact]
-        public async Task Update_JournalNotFound_ReturnsNull()
-        {
-            // Arrange
-            var entry = new EntryDto
-            {
-                Id = 1L,
-                Title = "Blah",
-                Body = "Blah dee frickin' blah",
-                JournalId = 1L,
-                UserId = "UserId"
-            };
-            
-            // Act
-            var service = new EntryService(_context);
-            var result = await service.Update(entry);
-            
-            // Assert
-            result.Should().BeNull();
         }
 
         [Fact]
