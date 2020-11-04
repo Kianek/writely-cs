@@ -265,14 +265,14 @@ namespace writely.tests.Entries
         }
 
         [Fact]
-        public async Task MoveEntryToJournal_JournalNotFound_ReturnsNull()
+        public void MoveEntryToJournal_JournalNotFound_ThrowsMoveEntryException()
         {
-            // Act
+            // Act & assert
             var service = new EntryService(_context);
-            var result = await service.MoveEntryToJournal(1L, 1L);
-            
-            // Assert
-            result.Should().BeNull();
+            service
+                .Invoking(s => s.MoveEntryToJournal(1L, 1L))
+                .Should()
+                .Throw<MoveEntryException>();
         }
 
         public void Dispose()
