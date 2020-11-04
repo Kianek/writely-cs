@@ -122,8 +122,8 @@ namespace writely.Services
             var values = new List<object> { destinationJournal, sourceJournal, entry};
             if (values.Any(val => val == null))
             {
-                // TODO: throw MoveEntryException
-                return null;
+                throw new MoveEntryException(
+                    $"Unable to move entry {entryId} to journal {destinationJournalId}");
             }
 
             // Link entry to destination journal
