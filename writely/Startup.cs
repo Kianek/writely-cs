@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using writely.Data;
+using writely.Filters;
 using writely.Models;
 using writely.Services;
 
@@ -25,7 +26,10 @@ namespace writely
         {
             services.AddCors();
         
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(new HttpResponseExceptionFilter());
+            });
             
             services.AddTransient<IAuthService, AuthService>();
             
@@ -58,7 +62,11 @@ namespace writely
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/error-local-development");
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
             }
 
             app.UseRouting();
