@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using writely.Models;
 using writely.Models.Dto;
 using writely.Services;
@@ -9,20 +8,17 @@ namespace writely.integration_tests.Entries
 {
     public class EntriesControllerTest : IntegrationTestBase, IClassFixture<WebAppFactory<Startup>>
     {
-        private AppUser _user;
         private IJournalService _journalService;
         private IEntryService _entryService;
         
         public EntriesControllerTest(WebAppFactory<Startup> factory) : base(factory)
         {
-            _journalService = _services.GetRequiredService<IJournalService>();
-            _entryService = _services.GetRequiredService<IEntryService>();
         }
 
         [Fact]
         public async Task GetAll()
         {
-            _user = await SetUpUser();
+            await ArrangeTest();
 
             var journal = await _journalService.Add(_user.Id, "My Journal");
             await _entryService.Add(journal.Id, CreateEntryDto(_user, "My entry"));
@@ -36,7 +32,7 @@ namespace writely.integration_tests.Entries
         [Fact]
         public async Task GetOne()
         {
-            _user = await SetUpUser();
+            await ArrangeTest();
             
             var journal = await _journalService.Add(_user.Id, "My other Journal");
             await _entryService.Add(journal.Id, CreateEntryDto(_user, "My entry"));
@@ -48,7 +44,7 @@ namespace writely.integration_tests.Entries
         [Fact]
         public async Task Add()
         {
-            _user = await SetUpUser();
+            await ArrangeTest();
 
             var journal = await _journalService.Add(_user.Id, "Gonna add me an entry");
             var entry = CreateEntryDto(_user, "I am but a lowly entry");
@@ -60,7 +56,7 @@ namespace writely.integration_tests.Entries
         [Fact]
         public async Task Update()
         {
-            _user = await SetUpUser();
+            await ArrangeTest();
 
             var journal = await _journalService.Add(_user.Id, "I have an entry to update...");
             var oldEntry = await _entryService.Add(journal.Id, CreateEntryDto(_user, "Old Title"));
@@ -76,7 +72,7 @@ namespace writely.integration_tests.Entries
         [Fact]
         public async Task Delete()
         {
-            _user = await SetUpUser();
+            await ArrangeTest();
 
             var journal = _journalService.Add(_user.Id, "Too many entries. Delete one.");
             var entryToDelete = await _entryService.Add(journal.Id, CreateEntryDto(_user, "Don't you dare delete me."));
@@ -87,6 +83,13 @@ namespace writely.integration_tests.Entries
 
         private EntryDto CreateEntryDto(AppUser user, string title)
             => new EntryDto { Title = title, Body = "Lookie here", UserId = user.Id };
+
+        protected override async Task ArrangeTest()
+        {
+            await base.ArrangeTest();
+            _entryService = GetService<IEntryService>();
+            _journalService = GetService<IJournalService>();
+        }
 
         private string URL(string userId, long journalId) => $"api/users/{userId}/journals/{journalId}/entries";
 

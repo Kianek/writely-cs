@@ -1,6 +1,5 @@
+using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using writely.Models;
 using writely.Models.Dto;
 using Xunit;
 
@@ -17,9 +16,10 @@ namespace writely.integration_tests.Users
             [Fact]
             public async Task RegisterUser()
             {
+                InitializeTestHost();
                 var newUserJson = Helpers.CreateRegistrationDto();
 
-                using var response = await _client.PostAsync("/api/users", newUserJson.AsStringContent());
+                var response = await _client.PostAsync("/api/users", newUserJson.AsStringContent());
                 response.EnsureSuccessStatusCode();
             }
         }
@@ -34,29 +34,25 @@ namespace writely.integration_tests.Users
             [Fact]
             public async Task ChangePassword()
             {
-                var user = await SetUpUser();
+                await ArrangeTest();
                 var passwordUpdateDto = new UpdatePasswordDto(
                     "Password123!", "Skibbitydibbity123!");
                 var request = passwordUpdateDto.AsStringContent();
-                var response = await _client.PatchAsync($"/api/users/{user?.Id}/change-password", request);
+                var response = await _client.PatchAsync($"/api/users/{_user?.Id}/change-password", request);
                 response.EnsureSuccessStatusCode();
             }
         }
-
-        public class RegisteredUserTest : IntegrationTestBase, IClassFixture<WebAppFactory<Startup>>
+        
+        public class RegisteredUserActivationTest : IntegrationTestBase, IClassFixture<WebAppFactory<Startup>>, IDisposable
         {
-            private readonly AppUser _user;
-
-            public RegisteredUserTest(WebAppFactory<Startup> factory) : base(factory)
+            public RegisteredUserActivationTest(WebAppFactory<Startup> factory) : base(factory)
             {
-                _user = SetUpUser().Result;
-                _scope = factory.Services.CreateScope();
-                _services = _scope.ServiceProvider;
             }
-
+            
             [Fact]
             public async Task ActivateAccount()
             {
+                await ArrangeTest();
                 var response = await _client.PatchAsync($"/api/users/{_user?.Id}/activate", null);
                 response.EnsureSuccessStatusCode();
             }
@@ -64,13 +60,22 @@ namespace writely.integration_tests.Users
             [Fact]
             public async Task DisableAccount()
             {
+                await ArrangeTest();
                 var response = await _client.PatchAsync($"/api/users/{_user?.Id}/disable", null);
                 response.EnsureSuccessStatusCode();
+            }
+        }
+
+        public class RegisteredUserTest : IntegrationTestBase, IClassFixture<WebAppFactory<Startup>>
+        {
+            public RegisteredUserTest(WebAppFactory<Startup> factory) : base(factory)
+            {
             }
 
             [Fact]
             public async Task DeleteAccount()
             {
+                await ArrangeTest();
                 var response = await _client.DeleteAsync($"/api/users/{_user?.Id}");
                 response.EnsureSuccessStatusCode();
             }
@@ -78,6 +83,7 @@ namespace writely.integration_tests.Users
             [Fact]
             public async Task GetUserData()
             {
+                await ArrangeTest();
                 var response = await _client.GetAsync($"/api/users/{_user?.Id}");
                 response.EnsureSuccessStatusCode();
             }
